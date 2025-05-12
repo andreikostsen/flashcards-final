@@ -42,6 +42,7 @@ export const Cards = () => {
   const [currentPage, setCurrentPage] = useState<number>()
   const [itemsPerPage, setItemsPerPage] = useState<number>()
   const [searchInputValue, setSearchInputValue] = useState<string>()
+  const [open, setOpen] = useState<boolean>(false)
 
   const { data, isLoading } = useGetDeckCardsQuery({
     currentPage,
@@ -64,7 +65,14 @@ export const Cards = () => {
     },
     // { icon: <Edit2 height={'16'} width={'16'} />, redirect: '#', title: 'Edit' },
     {
-      icon: <EditDeckModal deckId={deckId} name={currentData ? currentData.name : ''} />,
+      icon: (
+        <EditDeckModal
+          deckId={deckId ? deckId : ''}
+          name={currentData ? currentData.name : ''}
+          onOpenChange={setOpen}
+          open={open}
+        />
+      ),
       // redirect: '',
       title: 'Edit',
     },
@@ -122,8 +130,10 @@ export const Cards = () => {
         )}
         <EditDeckModal
           cover={currentData ? currentData.cover : undefined}
-          deckId={deckId}
+          deckId={deckId ? deckId : ''}
           name={currentData ? currentData.name : ''}
+          onOpenChange={setOpen}
+          open={open}
         />
         <TextField
           handleValueChange={setSearchInputValue}

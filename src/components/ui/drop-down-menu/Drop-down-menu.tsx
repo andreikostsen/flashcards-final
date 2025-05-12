@@ -38,7 +38,7 @@ export const DropDownMenu = (props: DropDownMenuProps) => {
   }
 
   return (
-    <DropdownMenu.Root open={open}>
+    <DropdownMenu.Root modal={false} open={open}>
       <DropdownMenu.Trigger asChild onClick={onClickTrigger}>
         <button aria-label={'Customise options'} className={s.iconButton}>
           {trigger ? (
