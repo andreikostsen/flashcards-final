@@ -40,11 +40,9 @@ export const Decks = () => {
 
   const meResponse = useAuthMeQuery()
 
-  let authorId
+  let authorId: string | undefined = meResponse.data?.id
 
-  if (tabSwitcherValue == 'myCards') {
-    authorId = meResponse.data?.id
-  } else {
+  if (tabSwitcherValue !== 'myCards') {
     authorId = undefined
   }
 
@@ -174,19 +172,22 @@ export const Decks = () => {
                             wrapper={'button'}
                           />
                         </Link>
-                        <SvgWrapper
-                          SvgComponent={Edit2Outline}
-                          onClick={() => onEditClickHandler(item.cover, item.id, item.name)}
-                          size={'16'}
-                          wrapper={'button'}
-                        />
-
-                        <SvgWrapper
-                          SvgComponent={TrashOutline}
-                          onClick={() => deleteDeck(item.id)}
-                          size={'16'}
-                          wrapper={'button'}
-                        />
+                        {meResponse.data?.id == item.author.id && (
+                          <SvgWrapper
+                            SvgComponent={Edit2Outline}
+                            onClick={() => onEditClickHandler(item.cover, item.id, item.name)}
+                            size={'16'}
+                            wrapper={'button'}
+                          />
+                        )}
+                        {meResponse.data?.id == item.author.id && (
+                          <SvgWrapper
+                            SvgComponent={TrashOutline}
+                            onClick={() => deleteDeck(item.id)}
+                            size={'16'}
+                            wrapper={'button'}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
