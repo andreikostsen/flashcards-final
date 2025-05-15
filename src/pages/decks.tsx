@@ -200,15 +200,13 @@ export const Decks = () => {
             )}
           </TableBody>
         </Table>
-        {open && (
-          <EditDeckModal
-            cover={cover}
-            deckId={id}
-            name={name}
-            onOpenChange={openChangeEventHandler}
-            open={open}
-          />
-        )}
+        <EditDeckModal
+          cover={cover}
+          deckId={id}
+          name={name}
+          onOpenChange={openChangeEventHandler}
+          open={open}
+        />
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}
           onPerPageChange={onItemsPerPageClickHandler}

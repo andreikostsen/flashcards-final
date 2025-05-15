@@ -63,16 +63,22 @@ export const Cards = () => {
       redirect: `./learn/${deckId}`,
       title: 'Learn',
     },
-    // { icon: <Edit2 height={'16'} width={'16'} />, redirect: '#', title: 'Edit' },
     {
       icon: (
-        <EditDeckModal
-          deckId={deckId ? deckId : ''}
-          name={currentData ? currentData.name : ''}
-          onOpenChange={setOpen}
-          open={open}
+        <SvgWrapper
+          SvgComponent={Edit2Outline}
+          // onClick={() => setOpen(true)}
+          size={'16'}
+          wrapper={'button'}
         />
+        // <EditDeckModal
+        //   deckId={deckId ? deckId : ''}
+        //   name={currentData ? currentData.name : ''}
+        //   onOpenChange={setOpen}
+        //   open={open}
+        // />
       ),
+      onClick: () => setOpen(true),
       // redirect: '',
       title: 'Edit',
     },
@@ -128,13 +134,7 @@ export const Cards = () => {
         ) : (
           ''
         )}
-        <EditDeckModal
-          cover={currentData ? currentData.cover : undefined}
-          deckId={deckId ? deckId : ''}
-          name={currentData ? currentData.name : ''}
-          onOpenChange={setOpen}
-          open={open}
-        />
+
         <TextField
           handleValueChange={setSearchInputValue}
           placeholder={'Input search'}
@@ -180,6 +180,13 @@ export const Cards = () => {
               : ''}
           </TableBody>
         </Table>
+        <EditDeckModal
+          cover={currentData ? currentData.cover : undefined}
+          deckId={deckId ? deckId : ''}
+          name={currentData ? currentData.name : ''}
+          onOpenChange={setOpen}
+          open={open}
+        />
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}
           onPerPageChange={onItemsPerPageClickHandler}

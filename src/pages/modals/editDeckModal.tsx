@@ -1,9 +1,8 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Edit2Outline, Image } from '@/assets/icons/components'
+import { Image } from '@/assets/icons/components'
 import CloseCrossOutline from '@/assets/icons/components/Close'
-import { SvgWrapper } from '@/assets/icons/wrapper'
 import { Button } from '@/components/ui/button'
 import { ControlledCheckbox } from '@/components/ui/controlled/controlled-checkbox/controlled-checkbox'
 import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
@@ -42,8 +41,12 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
 
   const [updateDeck] = useUpdateDeckMutation()
 
+  useEffect(() => {
+    setCoverURL(props.cover)
+  }, [props.cover])
+
   const [cover, setCover] = useState<File | string>()
-  const [coverURL, setCoverURL] = useState<string | undefined>(props.cover)
+  const [coverURL, setCoverURL] = useState<string | undefined>()
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -87,12 +90,7 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
   }
 
   return (
-    <Modal
-      onOpenChange={props.onOpenChange}
-      open={props.open}
-      title={`Edit Deck`}
-      trigger={<SvgWrapper SvgComponent={Edit2Outline} size={'16'} wrapper={'button'} />}
-    >
+    <Modal onOpenChange={props.onOpenChange} open={props.open} title={`Edit Deck`}>
       <form onSubmit={event => event.preventDefault()}>
         <ControlledTextField
           CloseIcon={CloseCrossOutline}
