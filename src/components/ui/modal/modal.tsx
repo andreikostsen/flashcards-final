@@ -11,7 +11,7 @@ import { Typography } from '../typography'
 type ModalProps = {
   contentContainerClassName?: string
   onOpenChange: (open: boolean) => void
-  open: boolean
+  open?: boolean
   overlayClassName?: string
   title?: string
   trigger?: ReactNode

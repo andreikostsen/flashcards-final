@@ -12,7 +12,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-
+// const [open, setOpen] = useState(false)
 //
 // const ServiceModalComponent = ({
 //   withCloseBtn = true,
@@ -93,7 +93,8 @@ type Story = StoryObj<typeof meta>
 export const Header: Story = {
   args: {
     children: <Button variant={'primary'}>Edit profile</Button>,
-    title: 'Pri mary Modal',
+    onOpenChange: () => console.log('onOpenChangeChange'),
+    title: 'Primary Modal',
     trigger: <Button variant={'primary'}>Add New Deck</Button>,
   },
 }
@@ -123,6 +124,7 @@ export const ContainerWithHugeText: Story = {
         velit esse cillum dolore eu fugiat nulla pariatur.
       </div>
     ),
+    onOpenChange: () => console.log('onOpenChangeChange'),
     title: 'Primary Modal',
     trigger: <Button variant={'primary'}>Add New Deck</Button>,
   },
@@ -138,10 +140,11 @@ export const WithFooter: Story = {
         voluptate velit esse cillum dolore eu fugiat nulla pariatur.
       </div>
     ),
-    footer: {
-      buttonPrimary: <Button variant={'primary'}>Button Primary</Button>,
-      buttonSecondary: <Button variant={'secondary'}>Button Secondary</Button>,
-    },
+    onOpenChange: () => console.log('onOpenChangeChange'),
+    // footer: {
+    //   buttonPrimary: <Button variant={'primary'}>Button Primary</Button>,
+    //   buttonSecondary: <Button variant={'secondary'}>Button Secondary</Button>,
+    // },
     trigger: <Button variant={'primary'}>Add New Deck</Button>,
   },
 }
