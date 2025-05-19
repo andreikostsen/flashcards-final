@@ -20,6 +20,7 @@ import {
 import { TextField } from '@/components/ui/textField'
 import { Typography } from '@/components/ui/typography'
 import { AddNewCardModal } from '@/pages/modals/addNewCardModal'
+import { DeleteDeckModal } from '@/pages/modals/deleteDeckModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
 import {
@@ -43,6 +44,7 @@ export const Cards = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>()
   const [searchInputValue, setSearchInputValue] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
   const { data, isLoading } = useGetDeckCardsQuery({
     currentPage,
@@ -64,25 +66,15 @@ export const Cards = () => {
       title: 'Learn',
     },
     {
-      icon: (
-        <SvgWrapper
-          SvgComponent={Edit2Outline}
-          // onClick={() => setOpen(true)}
-          size={'16'}
-          wrapper={'button'}
-        />
-        // <EditDeckModal
-        //   deckId={deckId ? deckId : ''}
-        //   name={currentData ? currentData.name : ''}
-        //   onOpenChange={setOpen}
-        //   open={open}
-        // />
-      ),
+      icon: <SvgWrapper SvgComponent={Edit2Outline} size={'16'} wrapper={'button'} />,
       onClick: () => setOpen(true),
-      // redirect: '',
       title: 'Edit',
     },
-    { icon: <TrashOutline height={'16'} width={'16'} />, redirect: '#', title: 'Delete' },
+    {
+      icon: <SvgWrapper SvgComponent={TrashOutline} size={'16'} wrapper={'button'} />,
+      onClick: () => setDeleteModalOpen(true),
+      title: 'Delete',
+    },
   ]
 
   console.log(searchInputValue)
@@ -186,6 +178,12 @@ export const Cards = () => {
           name={currentData ? currentData.name : ''}
           onOpenChange={setOpen}
           open={open}
+        />
+        <DeleteDeckModal
+          deckId={deckId ? deckId : ''}
+          name={currentData ? currentData.name : ''}
+          onOpenChange={setDeleteModalOpen}
+          open={deleteModalOpen}
         />
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}

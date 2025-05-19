@@ -17,10 +17,10 @@ import {
 } from '@/components/ui/tables/table-components'
 import { Typography } from '@/components/ui/typography'
 import { AddNewDeckModal } from '@/pages/modals/addNewDeckModal'
-import { DeleteCardModal } from '@/pages/modals/deleteCardModal'
+import { DeleteDeckModal } from '@/pages/modals/deleteDeckModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
-import { useDeleteDeckMutation, useGetDecksQuery } from '@/services/base-api'
+import { useGetDecksQuery } from '@/services/base-api'
 import { GetDecksQuery } from '@/services/flashcards.types'
 
 import s from './decks.module.scss'
@@ -56,11 +56,11 @@ export const Decks = () => {
     name: searchInputValue,
   }
   const { data, isLoading } = useGetDecksQuery(getDecksQuery)
-  const [deleteDeck] = useDeleteDeckMutation()
   const [open, setOpen] = useState<boolean>(false)
   const [cover, setCover] = useState<string | undefined>()
   const [id, setId] = useState<string>('')
   const [name, setName] = useState<string>()
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
   console.log(meResponse)
 
@@ -106,6 +106,13 @@ export const Decks = () => {
 
   const onDeleteDeckHandler = (deckId: string, name: string) => {
     console.log(deckId, name)
+    setDeleteModalOpen(true)
+    setId(deckId)
+    setName(name)
+  }
+
+  const openChangeDeleteHandler = (open: boolean) => {
+    setDeleteModalOpen(open)
   }
 
   return (
@@ -213,11 +220,11 @@ export const Decks = () => {
           onOpenChange={openChangeEventHandler}
           open={open}
         />
-        <DeleteCardModal
+        <DeleteDeckModal
           deckId={id}
           name={name}
-          onOpenChange={openChangeEventHandler}
-          open={open}
+          onOpenChange={openChangeDeleteHandler}
+          open={deleteModalOpen}
         />
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}
