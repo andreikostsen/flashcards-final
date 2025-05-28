@@ -24,12 +24,12 @@ import { DeleteDeckModal } from '@/pages/modals/deleteDeckModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
 import {
-  useDeleteCardMutation,
   useGetDeckByIdQuery,
   useGetDeckCardsQuery,
 } from '@/services/base-api'
 
 import s from './cards.module.scss'
+import { DeleteCardModal } from "@/pages/modals/deleteCardModal";
 
 export const Cards = () => {
   const { deckId } = useParams()
@@ -44,7 +44,10 @@ export const Cards = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>()
   const [searchInputValue, setSearchInputValue] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
-  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
+  const [deleteDeckModalOpen, setDeleteDeckModalOpen] = useState<boolean>(false)
+  const [cardId, setCardId] = useState<string>()
+  const [cardName, setCardName] = useState<string>()
+  const [deleteCardModalOpen, setDeleteCardModalOpen] = useState<boolean>(false)
 
   const { data, isLoading } = useGetDeckCardsQuery({
     currentPage,
@@ -57,7 +60,6 @@ export const Cards = () => {
   console.log(data)
 
   const meResponse = useAuthMeQuery()
-  const [deleteCard] = useDeleteCardMutation()
 
   const options: dropDownMenuList[] = [
     {
@@ -72,7 +74,7 @@ export const Cards = () => {
     },
     {
       icon: <SvgWrapper SvgComponent={TrashOutline} size={'16'} wrapper={'button'} />,
-      onClick: () => setDeleteModalOpen(true),
+      onClick: () => setDeleteDeckModalOpen(true),
       title: 'Delete',
     },
   ]
@@ -85,6 +87,12 @@ export const Cards = () => {
 
   const onItemsPerPageClickHandler = (itemsPerPage: string) => {
     setItemsPerPage(Number(itemsPerPage))
+  }
+
+  const deleteCardHandler = (cardId:string, name:string) => {
+    setCardId(cardId)
+    setCardName(name)
+    setDeleteCardModalOpen(true)
   }
 
   if (isLoading) {
@@ -161,7 +169,7 @@ export const Cards = () => {
                         <SvgWrapper SvgComponent={Edit2Outline} size={'16'} wrapper={'button'} />
                         <SvgWrapper
                           SvgComponent={TrashOutline}
-                          onClick={() => deleteCard(item.id)}
+                          onClick={() => deleteCardHandler(item.id, item.question)}
                           size={'16'}
                           wrapper={'button'}
                         />
@@ -182,9 +190,10 @@ export const Cards = () => {
         <DeleteDeckModal
           deckId={deckId ? deckId : ''}
           name={currentData ? currentData.name : ''}
-          onOpenChange={setDeleteModalOpen}
-          open={deleteModalOpen}
+          onOpenChange={setDeleteDeckModalOpen}
+          open={deleteDeckModalOpen}
         />
+        <DeleteCardModal cardId={cardId} onOpenChange={setDeleteCardModalOpen} open={deleteCardModalOpen} name={cardName}/>
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}
           onPerPageChange={onItemsPerPageClickHandler}

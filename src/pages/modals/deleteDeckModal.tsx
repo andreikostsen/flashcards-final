@@ -16,7 +16,7 @@ type PropsType = {
 
 export const DeleteDeckModal = ({ deckId, name, onOpenChange, open }: PropsType) => {
   const [deleteDeck] = useDeleteDeckMutation()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const deteteDeckHandler = () => {
     deleteDeck(deckId)
