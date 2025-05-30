@@ -20,7 +20,6 @@ import {
 import { TextField } from '@/components/ui/textField'
 import { Typography } from '@/components/ui/typography'
 import { AddNewCardModal } from '@/pages/modals/addNewCardModal'
-import { DeleteDeckModal } from '@/pages/modals/deleteDeckModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
 import {
@@ -29,7 +28,8 @@ import {
 } from '@/services/base-api'
 
 import s from './cards.module.scss'
-import { DeleteCardModal } from "@/pages/modals/deleteCardModal";
+
+import { DeleteModal } from "@/pages/modals/deleteModal";
 
 export const Cards = () => {
   const { deckId } = useParams()
@@ -44,10 +44,10 @@ export const Cards = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>()
   const [searchInputValue, setSearchInputValue] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
-  const [deleteDeckModalOpen, setDeleteDeckModalOpen] = useState<boolean>(false)
   const [cardId, setCardId] = useState<string>()
   const [cardName, setCardName] = useState<string>()
-  const [deleteCardModalOpen, setDeleteCardModalOpen] = useState<boolean>(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
+  const [card, setCard] = useState<boolean>(false)
 
   const { data, isLoading } = useGetDeckCardsQuery({
     currentPage,
@@ -74,7 +74,7 @@ export const Cards = () => {
     },
     {
       icon: <SvgWrapper SvgComponent={TrashOutline} size={'16'} wrapper={'button'} />,
-      onClick: () => setDeleteDeckModalOpen(true),
+      onClick: () => deleteDeckHandler(),
       title: 'Delete',
     },
   ]
@@ -92,8 +92,16 @@ export const Cards = () => {
   const deleteCardHandler = (cardId:string, name:string) => {
     setCardId(cardId)
     setCardName(name)
-    setDeleteCardModalOpen(true)
+    setDeleteModalOpen(true)
+    setCard(true)
   }
+
+  const deleteDeckHandler = () => {
+    setCard(false)
+    setDeleteModalOpen(true)
+  }
+
+
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -187,13 +195,7 @@ export const Cards = () => {
           onOpenChange={setOpen}
           open={open}
         />
-        <DeleteDeckModal
-          deckId={deckId ? deckId : ''}
-          name={currentData ? currentData.name : ''}
-          onOpenChange={setDeleteDeckModalOpen}
-          open={deleteDeckModalOpen}
-        />
-        <DeleteCardModal cardId={cardId} onOpenChange={setDeleteCardModalOpen} open={deleteCardModalOpen} name={cardName}/>
+        <DeleteModal id={card? cardId:deckId} onOpenChange={setDeleteModalOpen} open={deleteModalOpen} card={card} name={card? cardName : currentData ? currentData.name : ''}/>
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}
           onPerPageChange={onItemsPerPageClickHandler}

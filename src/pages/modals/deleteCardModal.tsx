@@ -16,7 +16,7 @@ export const DeleteCardModal = ({ cardId, name, onOpenChange, open }: PropsType)
   const [deleteCard] = useDeleteCardMutation()
 
   const deteteCardHandler = () => {
-    cardId? deleteCard(cardId) : ''
+    cardId ? deleteCard(cardId) : ''
     onOpenChange(false)
   }
 
