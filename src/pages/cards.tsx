@@ -20,16 +20,12 @@ import {
 import { TextField } from '@/components/ui/textField'
 import { Typography } from '@/components/ui/typography'
 import { AddNewCardModal } from '@/pages/modals/addNewCardModal'
+import { DeleteModal } from '@/pages/modals/deleteModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
-import {
-  useGetDeckByIdQuery,
-  useGetDeckCardsQuery,
-} from '@/services/base-api'
+import { useGetDeckByIdQuery, useGetDeckCardsQuery } from '@/services/base-api'
 
 import s from './cards.module.scss'
-
-import { DeleteModal } from "@/pages/modals/deleteModal";
 
 export const Cards = () => {
   const { deckId } = useParams()
@@ -89,7 +85,7 @@ export const Cards = () => {
     setItemsPerPage(Number(itemsPerPage))
   }
 
-  const deleteCardHandler = (cardId:string, name:string) => {
+  const deleteCardHandler = (cardId: string, name: string) => {
     setCardId(cardId)
     setCardName(name)
     setDeleteModalOpen(true)
@@ -100,8 +96,6 @@ export const Cards = () => {
     setCard(false)
     setDeleteModalOpen(true)
   }
-
-
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -195,7 +189,13 @@ export const Cards = () => {
           onOpenChange={setOpen}
           open={open}
         />
-        <DeleteModal id={card? cardId:deckId} onOpenChange={setDeleteModalOpen} open={deleteModalOpen} card={card} name={card? cardName : currentData ? currentData.name : ''}/>
+        <DeleteModal
+          card={card}
+          id={card ? cardId : deckId}
+          name={card ? cardName : currentData ? currentData.name : ''}
+          onOpenChange={setDeleteModalOpen}
+          open={deleteModalOpen}
+        />
         <Pagination
           onPageChange={onCurrentPageButtonClickHandler}
           onPerPageChange={onItemsPerPageClickHandler}
