@@ -35,6 +35,7 @@ export const DeleteModal = ({ card, id, name, onOpenChange, open }: PropsType) =
     <Modal onOpenChange={onOpenChange} open={open} title={card ? 'Delete Card' : 'Delete Deck'}>
       <div className={s.mainTextWrapper}>
         <Typography variant={'subtitle1'}>
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
           <span className={s.normalTxt}>Do you really want to remove </span> "{name}"
           {card ? (
             <span className={s.normalTxt}> card?</span>
