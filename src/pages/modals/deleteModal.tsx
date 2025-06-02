@@ -8,14 +8,14 @@ import { useDeleteCardMutation, useDeleteDeckMutation } from '@/services/base-ap
 import s from './deleteDeckModal.module.scss'
 
 type PropsType = {
-  card: boolean
+  card?: boolean
   id?: string
   name?: string
   onOpenChange: (open: boolean) => void
   open: boolean
 }
 
-export const DeleteModal = ({ card, id, name, onOpenChange, open }: PropsType) => {
+export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: PropsType) => {
   const [deleteDeck] = useDeleteDeckMutation()
   const [deleteCard] = useDeleteCardMutation()
   const navigate = useNavigate()

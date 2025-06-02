@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ControlledCheckbox } from '@/components/ui/controlled/controlled-checkbox/controlled-checkbox'
 import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
 import { Modal } from '@/components/ui/modal'
+import { ToastDemo } from '@/components/ui/toast/toast'
 import { addNewDeckFormValues, addNewDeckSchema } from '@/pages/modals/addNewDecksModal-schema'
 import { useCreateDeckMutation } from '@/services/base-api'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -75,55 +76,58 @@ export const AddNewDeckModal = () => {
   }
 
   return (
-    <Modal
-      onOpenChange={setOpen}
-      open={open}
-      title={'Add New Deck'}
-      trigger={<Button variant={'primary'}>Add New Deck</Button>}
-    >
-      <form onSubmit={event => event.preventDefault()}>
-        <ControlledTextField
-          control={control}
-          defaultValue={''}
-          labelText={'Name Pack'}
-          name={'name'}
-          wrapperProps={{ className: s.txtFieldWrapper }}
-        />
-        <div>
-          <input
-            id={'addDeckCoverInput'}
-            onChange={onFileChange}
-            style={{ display: 'none' }}
-            type={'file'}
+    <>
+      <Modal
+        onOpenChange={setOpen}
+        open={open}
+        title={'Add New Deck'}
+        trigger={<Button variant={'primary'}>Add New Deck</Button>}
+      >
+        <form onSubmit={event => event.preventDefault()}>
+          <ControlledTextField
+            control={control}
+            defaultValue={''}
+            labelText={'Name Pack'}
+            name={'name'}
+            wrapperProps={{ className: s.txtFieldWrapper }}
           />
-        </div>
-        {cover && (
-          <div className={s.coverImage}>
-            <img src={coverURL} width={'170px'} />
-            <button className={s.iconButton} onClick={onDeleteImageHandler}>
-              <CloseCrossOutline />
-            </button>
-          </div>
-        )}
-        <Button as={'label'} fullWidth htmlFor={'addDeckCoverInput'} variant={'secondary'}>
-          <Image width={'1rem'} /> {cover ? 'Change Image' : 'Upload Image'}
-        </Button>
-        <div className={s.checkBoxWrapper}>
-          <ControlledCheckbox control={control} labelText={'Private Pack'} name={'isPrivate'} />
-        </div>
-        <div className={s.footerWrapper}>
           <div>
-            <Button onClick={() => setOpen(false)} variant={'secondary'}>
-              Cancel
-            </Button>
+            <input
+              id={'addDeckCoverInput'}
+              onChange={onFileChange}
+              style={{ display: 'none' }}
+              type={'file'}
+            />
           </div>
-          <div>
-            <Button onClick={handleSubmit(onSubmit)} variant={'primary'}>
-              Add New Deck
-            </Button>
+          {cover && (
+            <div className={s.coverImage}>
+              <img src={coverURL} width={'170px'} />
+              <button className={s.iconButton} onClick={onDeleteImageHandler}>
+                <CloseCrossOutline />
+              </button>
+            </div>
+          )}
+          <Button as={'label'} fullWidth htmlFor={'addDeckCoverInput'} variant={'secondary'}>
+            <Image width={'1rem'} /> {cover ? 'Change Image' : 'Upload Image'}
+          </Button>
+          <div className={s.checkBoxWrapper}>
+            <ControlledCheckbox control={control} labelText={'Private Pack'} name={'isPrivate'} />
           </div>
-        </div>
-      </form>
-    </Modal>
+          <div className={s.footerWrapper}>
+            <div>
+              <Button onClick={() => setOpen(false)} variant={'secondary'}>
+                Cancel
+              </Button>
+            </div>
+            <div>
+              <Button onClick={handleSubmit(onSubmit)} variant={'primary'}>
+                Add New Deck
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+      <ToastDemo></ToastDemo>
+    </>
   )
 }

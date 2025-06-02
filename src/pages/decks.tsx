@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/tables/table-components'
 import { Typography } from '@/components/ui/typography'
 import { AddNewDeckModal } from '@/pages/modals/addNewDeckModal'
-import { DeleteDeckModal } from '@/pages/modals/deleteDeckModal'
+import { DeleteModal } from '@/pages/modals/deleteModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
 import { useGetDecksQuery } from '@/services/base-api'
@@ -104,7 +104,7 @@ export const Decks = () => {
     setOpen(open)
   }
 
-  const onDeleteDeckHandler = (deckId: string, name: string) => {
+  const onDeleteHandler = (deckId: string, name: string) => {
     console.log(deckId, name)
     setDeleteModalOpen(true)
     setId(deckId)
@@ -195,8 +195,7 @@ export const Decks = () => {
                         {meResponse.data?.id == item.author.id && (
                           <SvgWrapper
                             SvgComponent={TrashOutline}
-                            // onClick={() => deleteDeck(item.id)}
-                            onClick={() => onDeleteDeckHandler(item.id, item.name)}
+                            onClick={() => onDeleteHandler(item.id, item.name)}
                             size={'16'}
                             wrapper={'button'}
                           />
@@ -220,8 +219,8 @@ export const Decks = () => {
           onOpenChange={openChangeEventHandler}
           open={open}
         />
-        <DeleteDeckModal
-          deckId={id}
+        <DeleteModal
+          id={id}
           name={name}
           onOpenChange={openChangeDeleteHandler}
           open={deleteModalOpen}
