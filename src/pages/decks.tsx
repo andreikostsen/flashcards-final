@@ -1,29 +1,24 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { PlayCircleOutline, TrashOutline } from '@/assets/icons/components'
-import Edit2Outline from '@/assets/icons/components/Edit2Outline'
-import { SvgWrapper } from '@/assets/icons/wrapper'
-import { Filter } from '@/components/layout/filter/filter'
-import { Header } from '@/components/ui/header'
-import { Pagination } from '@/components/ui/pagination'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/tables/table-components'
-import { Typography } from '@/components/ui/typography'
-import { AddNewDeckModal } from '@/pages/modals/addNewDeckModal'
-import { DeleteModal } from '@/pages/modals/deleteModal'
-import { EditDeckModal } from '@/pages/modals/editDeckModal'
-import { useAuthMeQuery } from '@/services/auth/auth.service'
-import { useGetDecksQuery } from '@/services/base-api'
-import { GetDecksQuery } from '@/services/flashcards.types'
+import { PlayCircleOutline, TrashOutline } from "@/assets/icons/components";
+import Edit2Outline from "@/assets/icons/components/Edit2Outline";
+import { SvgWrapper } from "@/assets/icons/wrapper";
+import { Filter } from "@/components/layout/filter/filter";
+import { Header } from "@/components/ui/header";
+import { Pagination } from "@/components/ui/pagination";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/tables/table-components";
+import { Typography } from "@/components/ui/typography";
+import { AddNewDeckModal } from "@/pages/modals/addNewDeckModal";
+import { DeleteModal } from "@/pages/modals/deleteModal";
+import { EditDeckModal } from "@/pages/modals/editDeckModal";
+import { useAuthMeQuery } from "@/services/auth/auth.service";
+import { useGetDecksQuery } from "@/services/base-api";
+import { GetDecksQuery } from "@/services/flashcards.types";
 
-import s from './decks.module.scss'
+import s from "./decks.module.scss";
+import { toast, ToastContainer } from "react-toastify";
+import { ResultCode } from "@/common/enams/statuses";
 
 export const Decks = () => {
   const [currentPage, setCurrentPage] = useState<number>()
@@ -99,7 +94,7 @@ export const Decks = () => {
     setName(name)
   }
 
-  const openChangeEventHandler = (open: boolean) => {
+  const openChangeEditHandler = (open: boolean) => {
     console.log(open)
     setOpen(open)
   }
@@ -115,6 +110,19 @@ export const Decks = () => {
     setDeleteModalOpen(open)
   }
 
+  const addNewDeckModalToast = (message: string, toastType: ResultCode  ) => {
+
+
+    if (toastType === ResultCode.Success) {
+      toast.success(message)
+    } else {
+      toast.error(message)
+    }
+
+
+
+  }
+
   return (
     <>
       <Header isAuthenticated={!meResponse.isUninitialized} userInfo={meResponse.data} />
@@ -123,7 +131,7 @@ export const Decks = () => {
           <Typography as={'h1'} variant={'h1'}>
             Decks list
           </Typography>
-          <AddNewDeckModal />
+          <AddNewDeckModal toastInfo={addNewDeckModalToast}/>
         </div>
         <Filter
           inputValue={searchInputValue}
@@ -216,7 +224,7 @@ export const Decks = () => {
           cover={cover}
           deckId={id}
           name={name}
-          onOpenChange={openChangeEventHandler}
+          onOpenChange={openChangeEditHandler}
           open={open}
         />
         <DeleteModal
@@ -231,6 +239,7 @@ export const Decks = () => {
           perPageOptions={['10', '20', '30', '50', '100']}
           totalPages={data ? data.pagination.totalPages : 1}
         />
+        <ToastContainer />
       </div>
     </>
   )

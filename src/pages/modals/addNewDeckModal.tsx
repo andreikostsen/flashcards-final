@@ -1,20 +1,25 @@
-import { ChangeEvent, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { Image } from '@/assets/icons/components'
-import CloseCrossOutline from '@/assets/icons/components/Close'
-import { Button } from '@/components/ui/button'
-import { ControlledCheckbox } from '@/components/ui/controlled/controlled-checkbox/controlled-checkbox'
-import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
-import { Modal } from '@/components/ui/modal'
-import { ToastDemo } from '@/components/ui/toast/toast'
-import { addNewDeckFormValues, addNewDeckSchema } from '@/pages/modals/addNewDecksModal-schema'
-import { useCreateDeckMutation } from '@/services/base-api'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Image } from "@/assets/icons/components";
+import CloseCrossOutline from "@/assets/icons/components/Close";
+import { Button } from "@/components/ui/button";
+import { ControlledCheckbox } from "@/components/ui/controlled/controlled-checkbox/controlled-checkbox";
+import { ControlledTextField } from "@/components/ui/controlled/controlled-textfield/controlled-textfield";
+import { Modal } from "@/components/ui/modal";
 
-import s from './addNewDeckModal.module.scss'
+import { addNewDeckFormValues, addNewDeckSchema } from "@/pages/modals/addNewDecksModal-schema";
+import { useCreateDeckMutation } from "@/services/base-api";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export const AddNewDeckModal = () => {
+import s from "./addNewDeckModal.module.scss";
+import { ResultCode } from "@/common/enams/statuses";
+
+type PropsType = {
+  toastInfo: (message: string, toastType: ResultCode)=>void
+}
+
+export const AddNewDeckModal = ({ toastInfo }:PropsType) => {
   const {
     control,
     formState: { errors, isValid },
@@ -51,22 +56,30 @@ export const AddNewDeckModal = () => {
 
   console.log('coverURL: ', coverURL)
 
-  const onSubmit = async (data: addNewDeckFormValues) => {
+  const onSubmit = (data: addNewDeckFormValues) => {
     console.log(data)
     const dataWithCover = { ...data, cover }
 
     console.log(dataWithCover)
 
     if (isValid) {
-      try {
-        await createDeck(dataWithCover).then(() =>
-          console.log('new deck ' + data.name + ' created')
+      createDeck(dataWithCover)
+        .then((result:any) =>{
+
+          result.error && result.error.data.errorMessages[0].message ? toastInfo(result.error.data.errorMessages[0].message? result.error.data.errorMessages[0].message : result.error.error, ResultCode.Error) :
+
+          toastInfo('new deck ' + '"' + result.data.name + '"' + ' has been created', ResultCode.Success)
+        })
+        .catch((reason) => {
+
+          toastInfo(reason.message, ResultCode.Error)
+        })
+        .finally(()=>{
+          setOpen(false)
+          reset()
+          }
         )
-      } catch (e) {
-        console.log(e)
-      }
-      setOpen(false)
-      reset()
+
     }
   }
 
@@ -127,7 +140,6 @@ export const AddNewDeckModal = () => {
           </div>
         </form>
       </Modal>
-      <ToastDemo></ToastDemo>
     </>
   )
 }
