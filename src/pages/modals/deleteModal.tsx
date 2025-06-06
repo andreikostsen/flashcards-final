@@ -1,11 +1,13 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
-import { Button } from '@/components/ui/button'
-import { Modal } from '@/components/ui/modal'
-import { Typography } from '@/components/ui/typography'
-import { useDeleteCardMutation, useDeleteDeckMutation } from '@/services/base-api'
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
+import { Typography } from "@/components/ui/typography";
+import { useDeleteCardMutation, useDeleteDeckMutation } from "@/services/base-api";
 
-import s from './deleteDeckModal.module.scss'
+import s from "./deleteDeckModal.module.scss";
+import { useToast } from "@/common/hooks/useToast";
+import { ResultCode } from "@/common/enams/statuses";
 
 type PropsType = {
   card?: boolean
@@ -20,14 +22,16 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
   const [deleteCard] = useDeleteCardMutation()
   const navigate = useNavigate()
 
-  const deleteDeckHandler = () => {
-    id ? deleteDeck(id) : null
+  const deleteDeckHandler = async () => {
+    id ? await deleteDeck(id) : null
+    useToast('Deck ' + '"' + name + '"' + ' was successfully deleted', ResultCode.Success)
     onOpenChange(false)
     navigate('../')
   }
 
-  const deleteCardHandler = () => {
-    id ? deleteCard(id) : ''
+  const deleteCardHandler = async () => {
+    id ? await deleteCard(id) : null
+    useToast('Card ' + '"' + name + '"' + ' was successfully deleted', ResultCode.Success)
     onOpenChange(false)
   }
 
@@ -35,7 +39,6 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
     <Modal onOpenChange={onOpenChange} open={open} title={card ? 'Delete Card' : 'Delete Deck'}>
       <div className={s.mainTextWrapper}>
         <Typography variant={'subtitle1'}>
-          {/* eslint-disable-next-line react/no-unescaped-entities */}
           <span className={s.normalTxt}>Do you really want to remove </span> "{name}"
           {card ? (
             <span className={s.normalTxt}> card?</span>

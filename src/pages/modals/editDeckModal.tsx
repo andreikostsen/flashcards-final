@@ -12,6 +12,8 @@ import { useUpdateDeckMutation } from '@/services/base-api'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import s from './addNewDeckModal.module.scss'
+import { useToast } from "@/common/hooks/useToast";
+import { ResultCode } from "@/common/enams/statuses";
 
 type PropsType = {
   cover?: string
@@ -67,7 +69,7 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
     if (isValid) {
       try {
         await updateDeck({ ...dataWithCover }).then(() =>
-          console.log('deck ' + data.name + ' udpated')
+          useToast('Deck ' + '"' + data.name + '"' + ' has been successfully updated', ResultCode.Success)
         )
       } catch (e) {
         console.log(e)

@@ -1,17 +1,19 @@
-import { ChangeEvent, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { Image } from '@/assets/icons/components'
-import CloseCrossOutline from '@/assets/icons/components/Close'
-import { Button } from '@/components/ui/button'
-import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
-import { Modal } from '@/components/ui/modal'
-import { Typography } from '@/components/ui/typography'
-import { addNewCardFormValues, addNewCardSchema } from '@/pages/modals/addNewCardModal-schema'
-import { useCreateCardMutation } from '@/services/base-api'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Image } from "@/assets/icons/components";
+import CloseCrossOutline from "@/assets/icons/components/Close";
+import { Button } from "@/components/ui/button";
+import { ControlledTextField } from "@/components/ui/controlled/controlled-textfield/controlled-textfield";
+import { Modal } from "@/components/ui/modal";
+import { Typography } from "@/components/ui/typography";
+import { addNewCardFormValues, addNewCardSchema } from "@/pages/modals/addNewCardModal-schema";
+import { useCreateCardMutation } from "@/services/base-api";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import s from './addNewCardModal.module.scss'
+import s from "./addNewCardModal.module.scss";
+import { useToast } from "@/common/hooks/useToast";
+import { ResultCode } from "@/common/enams/statuses";
 
 type PropsType = {
   deckId: string
@@ -74,7 +76,7 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
     if (isValid) {
       try {
         await createCard(dataForRequest).then(() =>
-          console.log('new card ' + data.question + ' created')
+          useToast('new card ' + data.question + ' created', ResultCode.Success)
         )
       } catch (e) {
         console.log(e)

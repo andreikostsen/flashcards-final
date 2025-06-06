@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react'
 import { Link } from "react-router-dom";
 
 import { PlayCircleOutline, TrashOutline } from "@/assets/icons/components";
@@ -17,8 +17,8 @@ import { useGetDecksQuery } from "@/services/base-api";
 import { GetDecksQuery } from "@/services/flashcards.types";
 
 import s from "./decks.module.scss";
-import { toast, ToastContainer } from "react-toastify";
-import { ResultCode } from "@/common/enams/statuses";
+import { ToastContainer } from "react-toastify";
+
 
 export const Decks = () => {
   const [currentPage, setCurrentPage] = useState<number>()
@@ -110,18 +110,6 @@ export const Decks = () => {
     setDeleteModalOpen(open)
   }
 
-  const addNewDeckModalToast = (message: string, toastType: ResultCode  ) => {
-
-
-    if (toastType === ResultCode.Success) {
-      toast.success(message)
-    } else {
-      toast.error(message)
-    }
-
-
-
-  }
 
   return (
     <>
@@ -131,7 +119,7 @@ export const Decks = () => {
           <Typography as={'h1'} variant={'h1'}>
             Decks list
           </Typography>
-          <AddNewDeckModal toastInfo={addNewDeckModalToast}/>
+          <AddNewDeckModal />
         </div>
         <Filter
           inputValue={searchInputValue}

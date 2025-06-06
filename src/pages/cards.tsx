@@ -26,6 +26,7 @@ import { useAuthMeQuery } from '@/services/auth/auth.service'
 import { useGetDeckByIdQuery, useGetDeckCardsQuery } from '@/services/base-api'
 
 import s from './cards.module.scss'
+import { ToastContainer } from "react-toastify";
 
 export const Cards = () => {
   const { deckId } = useParams()
@@ -203,6 +204,7 @@ export const Cards = () => {
           totalPages={data ? data.pagination.totalPages : 1}
         />
       </div>
+      <ToastContainer />
     </>
   )
 }

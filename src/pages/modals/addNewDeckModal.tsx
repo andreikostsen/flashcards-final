@@ -14,12 +14,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import s from "./addNewDeckModal.module.scss";
 import { ResultCode } from "@/common/enams/statuses";
+import { useToast } from "@/common/hooks/useToast";
 
-type PropsType = {
-  toastInfo: (message: string, toastType: ResultCode)=>void
-}
+// type PropsType = {
+//   toastInfo: (message: string, toastType: ResultCode)=>void
+// }
 
-export const AddNewDeckModal = ({ toastInfo }:PropsType) => {
+export const AddNewDeckModal = () => {
   const {
     control,
     formState: { errors, isValid },
@@ -66,13 +67,13 @@ export const AddNewDeckModal = ({ toastInfo }:PropsType) => {
       createDeck(dataWithCover)
         .then((result:any) =>{
 
-          result.error && result.error.data.errorMessages[0].message ? toastInfo(result.error.data.errorMessages[0].message? result.error.data.errorMessages[0].message : result.error.error, ResultCode.Error) :
+          result.error && result.error.data.errorMessages[0].message ? useToast(result.error.data.errorMessages[0].message? result.error.data.errorMessages[0].message : result.error.error, ResultCode.Error) :
 
-          toastInfo('new deck ' + '"' + result.data.name + '"' + ' has been created', ResultCode.Success)
+          useToast('New deck ' + '"' + result.data.name + '"' + ' has been created', ResultCode.Success)
         })
         .catch((reason) => {
 
-          toastInfo(reason.message, ResultCode.Error)
+          useToast(reason.message, ResultCode.Error)
         })
         .finally(()=>{
           setOpen(false)
