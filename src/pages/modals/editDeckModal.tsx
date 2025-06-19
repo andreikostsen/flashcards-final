@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form'
 
 import { Image } from '@/assets/icons/components'
 import CloseCrossOutline from '@/assets/icons/components/Close'
+import { ResultCode } from '@/common/enams/statuses'
+import { useToast } from '@/common/hooks/useToast'
 import { Button } from '@/components/ui/button'
 import { ControlledCheckbox } from '@/components/ui/controlled/controlled-checkbox/controlled-checkbox'
 import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
@@ -10,10 +12,9 @@ import { Modal } from '@/components/ui/modal'
 import { addNewDeckFormValues, addNewDeckSchema } from '@/pages/modals/addNewDecksModal-schema'
 import { useUpdateDeckMutation } from '@/services/base-api'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LinearProgress } from '@mui/material'
 
 import s from './addNewDeckModal.module.scss'
-import { useToast } from "@/common/hooks/useToast";
-import { ResultCode } from "@/common/enams/statuses";
 
 type PropsType = {
   cover?: string
@@ -67,17 +68,47 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
     console.log(dataWithCover)
 
     if (isValid) {
-      try {
-        await updateDeck({ ...dataWithCover }).then(() =>
-          useToast('Deck ' + '"' + data.name + '"' + ' has been successfully updated', ResultCode.Success)
-        )
-      } catch (e) {
-        console.log(e)
-      }
-      props.onOpenChange(false)
-      reset()
+      updateDeck({ ...dataWithCover })
+        .then((result: any) => {
+          if (result.error) {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            useToast(
+              "Deck wasn't updated!" + ' ' + result.error.data.errorMessages[0].message,
+              ResultCode.Error
+            )
+          } else {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            useToast(
+              'Deck ' + '"' + data.name + '"' + ' has been successfully updated',
+              ResultCode.Success
+            )
+          }
+        })
+        .catch((err: Error) => console.log(err))
+        .finally(() => {
+          props.onOpenChange(false)
+          reset()
+        })
     }
   }
+  //   if (isValid) {
+  //     await updateDeck({ ...dataWithCover })
+  //     try {
+  //       debugger
+  //       // eslint-disable-next-line react-hooks/rules-of-hooks
+  //       useToast(
+  //         'Deck ' + '"' + data.name + '"' + ' has been successfully updated',
+  //         ResultCode.Success
+  //       )
+  //     } catch (e: any) {
+  //       debugger
+  //       // eslint-disable-next-line react-hooks/rules-of-hooks
+  //       useToast(e, ResultCode.Error)
+  //     }
+  //     props.onOpenChange(false)
+  //     reset()
+  //   }
+  // }
 
   const onDeleteImageHandler = () => {
     if (coverURL != null) {
@@ -138,6 +169,7 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
           </div>
         </div>
       </form>
+      <LinearProgress />
     </Modal>
   )
 }

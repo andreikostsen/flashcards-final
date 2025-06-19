@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 import { Edit2Outline, PlayCircleOutline, TrashOutline } from '@/assets/icons/components'
 import ArrowBackOutline from '@/assets/icons/components/ArrowBackOutline'
@@ -26,7 +27,6 @@ import { useAuthMeQuery } from '@/services/auth/auth.service'
 import { useGetDeckByIdQuery, useGetDeckCardsQuery } from '@/services/base-api'
 
 import s from './cards.module.scss'
-import { ToastContainer } from "react-toastify";
 
 export const Cards = () => {
   const { deckId } = useParams()
@@ -101,6 +101,15 @@ export const Cards = () => {
   if (isLoading) {
     return <div>Loading...</div>
   }
+
+  let nameForDeleteModal: string | undefined = undefined
+
+  if (card) {
+    nameForDeleteModal = cardName
+  } else if (currentData) {
+    nameForDeleteModal = currentData.name
+  }
+
 
   return (
     <>
@@ -193,7 +202,7 @@ export const Cards = () => {
         <DeleteModal
           card={card}
           id={card ? cardId : deckId}
-          name={card ? cardName : currentData ? currentData.name : ''}
+          name={nameForDeleteModal}
           onOpenChange={setDeleteModalOpen}
           open={deleteModalOpen}
         />

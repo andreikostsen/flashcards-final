@@ -1,13 +1,13 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
-import { Typography } from "@/components/ui/typography";
-import { useDeleteCardMutation, useDeleteDeckMutation } from "@/services/base-api";
+import { ResultCode } from '@/common/enams/statuses'
+import { useToast } from '@/common/hooks/useToast'
+import { Button } from '@/components/ui/button'
+import { Modal } from '@/components/ui/modal'
+import { Typography } from '@/components/ui/typography'
+import { useDeleteCardMutation, useDeleteDeckMutation } from '@/services/base-api'
 
-import s from "./deleteDeckModal.module.scss";
-import { useToast } from "@/common/hooks/useToast";
-import { ResultCode } from "@/common/enams/statuses";
+import s from './deleteDeckModal.module.scss'
 
 type PropsType = {
   card?: boolean
@@ -24,6 +24,7 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
 
   const deleteDeckHandler = async () => {
     id ? await deleteDeck(id) : null
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useToast('Deck ' + '"' + name + '"' + ' was successfully deleted', ResultCode.Success)
     onOpenChange(false)
     navigate('../')
@@ -31,6 +32,7 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
 
   const deleteCardHandler = async () => {
     id ? await deleteCard(id) : null
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useToast('Card ' + '"' + name + '"' + ' was successfully deleted', ResultCode.Success)
     onOpenChange(false)
   }
@@ -39,6 +41,7 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
     <Modal onOpenChange={onOpenChange} open={open} title={card ? 'Delete Card' : 'Delete Deck'}>
       <div className={s.mainTextWrapper}>
         <Typography variant={'subtitle1'}>
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
           <span className={s.normalTxt}>Do you really want to remove </span> "{name}"
           {card ? (
             <span className={s.normalTxt}> card?</span>
