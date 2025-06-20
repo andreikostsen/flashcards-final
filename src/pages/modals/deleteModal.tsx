@@ -8,6 +8,7 @@ import { Typography } from '@/components/ui/typography'
 import { useDeleteCardMutation, useDeleteDeckMutation } from '@/services/base-api'
 
 import s from './deleteDeckModal.module.scss'
+import { useState } from "react";
 
 type PropsType = {
   card?: boolean
@@ -21,8 +22,10 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
   const [deleteDeck] = useDeleteDeckMutation()
   const [deleteCard] = useDeleteCardMutation()
   const navigate = useNavigate()
+  const [showProgress, setShowProgress] = useState<boolean>(false)
 
   const deleteDeckHandler = async () => {
+    setShowProgress(true)
     id ? await deleteDeck(id) : null
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useToast('Deck ' + '"' + name + '"' + ' was successfully deleted', ResultCode.Success)
@@ -31,6 +34,7 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
   }
 
   const deleteCardHandler = async () => {
+    setShowProgress(true)
     id ? await deleteCard(id) : null
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useToast('Card ' + '"' + name + '"' + ' was successfully deleted', ResultCode.Success)
@@ -38,7 +42,12 @@ export const DeleteModal = ({ card = false, id, name, onOpenChange, open }: Prop
   }
 
   return (
-    <Modal onOpenChange={onOpenChange} open={open} title={card ? 'Delete Card' : 'Delete Deck'}>
+    <Modal
+      onOpenChange={onOpenChange}
+      open={open}
+      showProgress={showProgress}
+      title={card ? 'Delete Card' : 'Delete Deck'}
+    >
       <div className={s.mainTextWrapper}>
         <Typography variant={'subtitle1'}>
           {/* eslint-disable-next-line react/no-unescaped-entities */}

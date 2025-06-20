@@ -12,7 +12,6 @@ import { Modal } from '@/components/ui/modal'
 import { addNewDeckFormValues, addNewDeckSchema } from '@/pages/modals/addNewDecksModal-schema'
 import { useUpdateDeckMutation } from '@/services/base-api'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LinearProgress } from '@mui/material'
 
 import s from './addNewDeckModal.module.scss'
 
@@ -50,6 +49,7 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
 
   const [cover, setCover] = useState<File | string>()
   const [coverURL, setCoverURL] = useState<string | undefined>()
+  const [showProgress, setShowProgress] = useState<boolean>(false)
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -61,9 +61,11 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
   console.log('cover: ', cover)
   console.log('coverURL: ', coverURL)
 
-  const onSubmit = async (data: addNewDeckFormValues) => {
+  const onSubmit = (data: addNewDeckFormValues) => {
     console.log(data)
     const dataWithCover = { ...data, cover, id: deckId }
+
+    setShowProgress(true)
 
     console.log(dataWithCover)
 
@@ -88,6 +90,7 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
         .finally(() => {
           props.onOpenChange(false)
           reset()
+          setShowProgress(false)
         })
     }
   }
@@ -123,7 +126,12 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
   }
 
   return (
-    <Modal onOpenChange={props.onOpenChange} open={props.open} title={`Edit Deck`}>
+    <Modal
+      onOpenChange={props.onOpenChange}
+      open={props.open}
+      showProgress={showProgress}
+      title={`Edit Deck`}
+    >
       <form onSubmit={event => event.preventDefault()}>
         <ControlledTextField
           CloseIcon={CloseCrossOutline}
@@ -169,7 +177,6 @@ export const EditDeckModal = ({ deckId, name, ...props }: PropsType) => {
           </div>
         </div>
       </form>
-      <LinearProgress />
     </Modal>
   )
 }

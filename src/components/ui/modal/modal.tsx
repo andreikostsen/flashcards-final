@@ -1,6 +1,7 @@
-import { ComponentProps, ComponentRef, ReactNode, forwardRef } from 'react'
+import { ComponentProps, ComponentRef, ReactNode, forwardRef, useEffect, useState } from 'react'
 
 import CloseCrossOutline from '@/assets/icons/components/Close'
+import { LinearProgress } from '@mui/material'
 import * as Dialog from '@radix-ui/react-dialog'
 import { clsx } from 'clsx'
 
@@ -13,6 +14,7 @@ type ModalProps = {
   onOpenChange: (open: boolean) => void
   open?: boolean
   overlayClassName?: string
+  showProgress?: boolean
   title?: string
   trigger?: ReactNode
 } & ComponentProps<'div'>
@@ -25,6 +27,7 @@ export const Modal = forwardRef<ComponentRef<'div'>, ModalProps>((props, ref) =>
     onOpenChange,
     open,
     overlayClassName,
+    showProgress,
     title,
     trigger,
   } = props
@@ -37,6 +40,25 @@ export const Modal = forwardRef<ComponentRef<'div'>, ModalProps>((props, ref) =>
     header: s.header,
     iconButton: s.iconButton,
   }
+
+  const [progress, setProgress] = useState<number>(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(oldProgress => {
+        if (oldProgress === 100) {
+          return 0
+        }
+        const diff = Math.random() * 10
+
+        return Math.min(oldProgress + diff, 100)
+      })
+    }, 500)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
 
   return (
     <Dialog.Root onOpenChange={onOpenChange} open={open}>
@@ -56,6 +78,7 @@ export const Modal = forwardRef<ComponentRef<'div'>, ModalProps>((props, ref) =>
               </button>
             </Dialog.Close>
           </header>
+          {showProgress && <LinearProgress value={progress} variant={'determinate'} />}
           <div className={classNames.contentWrapper}>{children}</div>
         </Dialog.Content>
       </Dialog.Portal>
