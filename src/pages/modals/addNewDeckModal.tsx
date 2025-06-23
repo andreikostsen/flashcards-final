@@ -1,24 +1,19 @@
-import { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
+import { ChangeEvent, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
-import { Image } from "@/assets/icons/components";
-import CloseCrossOutline from "@/assets/icons/components/Close";
-import { Button } from "@/components/ui/button";
-import { ControlledCheckbox } from "@/components/ui/controlled/controlled-checkbox/controlled-checkbox";
-import { ControlledTextField } from "@/components/ui/controlled/controlled-textfield/controlled-textfield";
-import { Modal } from "@/components/ui/modal";
+import { Image } from '@/assets/icons/components'
+import CloseCrossOutline from '@/assets/icons/components/Close'
+import { ResultCode } from '@/common/enams/statuses'
+import { useToast } from '@/common/hooks/useToast'
+import { Button } from '@/components/ui/button'
+import { ControlledCheckbox } from '@/components/ui/controlled/controlled-checkbox/controlled-checkbox'
+import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
+import { Modal } from '@/components/ui/modal'
+import { addNewDeckFormValues, addNewDeckSchema } from '@/pages/modals/addNewDecksModal-schema'
+import { useCreateDeckMutation } from '@/services/base-api'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-import { addNewDeckFormValues, addNewDeckSchema } from "@/pages/modals/addNewDecksModal-schema";
-import { useCreateDeckMutation } from "@/services/base-api";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import s from "./addNewDeckModal.module.scss";
-import { ResultCode } from "@/common/enams/statuses";
-import { useToast } from "@/common/hooks/useToast";
-
-// type PropsType = {
-//   toastInfo: (message: string, toastType: ResultCode)=>void
-// }
+import s from './addNewDeckModal.module.scss'
 
 export const AddNewDeckModal = () => {
   const {
@@ -65,22 +60,26 @@ export const AddNewDeckModal = () => {
 
     if (isValid) {
       createDeck(dataWithCover)
-        .then((result:any) =>{
-
-          result.error && result.error.data.errorMessages[0].message ? useToast(result.error.data.errorMessages[0].message? result.error.data.errorMessages[0].message : result.error.error, ResultCode.Error) :
-
-          useToast('New deck ' + '"' + result.data.name + '"' + ' has been created', ResultCode.Success)
+        .then((result: any) => {
+          result.error && result.error.data.errorMessages[0].message
+            ? useToast(
+                result.error.data.errorMessages[0].message
+                  ? result.error.data.errorMessages[0].message
+                  : result.error.error,
+                ResultCode.Error
+              )
+            : useToast(
+                'New deck ' + '"' + result.data.name + '"' + ' has been created',
+                ResultCode.Success
+              )
         })
-        .catch((reason) => {
-
+        .catch(reason => {
           useToast(reason.message, ResultCode.Error)
         })
-        .finally(()=>{
+        .finally(() => {
           setOpen(false)
           reset()
-          }
-        )
-
+        })
     }
   }
 

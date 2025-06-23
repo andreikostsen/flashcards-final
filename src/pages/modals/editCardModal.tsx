@@ -10,16 +10,16 @@ import { ControlledTextField } from '@/components/ui/controlled/controlled-textf
 import { Modal } from '@/components/ui/modal'
 import { Typography } from '@/components/ui/typography'
 import { addNewCardFormValues, addNewCardSchema } from '@/pages/modals/addNewCardModal-schema'
-import { useCreateCardMutation } from '@/services/base-api'
+import { useUpdateCardMutation } from '@/services/base-api'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import s from './addNewCardModal.module.scss'
 
 type PropsType = {
-  deckId: string
+  cardId: string
 }
 
-export const AddNewCardModal = ({ deckId }: PropsType) => {
+export const EditCardModal = ({ cardId }: PropsType) => {
   const {
     control,
     formState: { errors, isValid },
@@ -35,7 +35,7 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
 
   console.log('errors: ', errors)
 
-  const [createCard] = useCreateCardMutation()
+  const [updateCard] = useUpdateCardMutation()
 
   const [questionCover, setQuestionCover] = useState<File>()
   const [answerCover, setAnswerCover] = useState<File>()
@@ -69,14 +69,14 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
 
   const onSubmit = async (data: addNewCardFormValues) => {
     console.log(data)
-    const dataForRequest = { ...data, id: deckId }
+    const dataForRequest = { ...data, id: cardId }
 
     console.log(dataForRequest)
 
     if (isValid) {
       try {
-        await createCard(dataForRequest).then(() =>
-          useToast('new card ' + data.question + ' created', ResultCode.Success)
+        await updateCard(dataForRequest).then(() =>
+          useToast('Card ' + data.question + ' was successfully updated', ResultCode.Success)
         )
       } catch (e) {
         console.log(e)

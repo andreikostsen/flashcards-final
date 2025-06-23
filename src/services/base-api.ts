@@ -9,6 +9,8 @@ import {
   GetDecksResponseItems,
   retrieveRandomCardQuery,
   retrieveRandomCardResponse,
+  updateCard,
+  updateCardResponse,
   updateDeckQuery,
   updateDeckResponse,
 } from '@/services/flashcards.types'
@@ -118,6 +120,23 @@ export const baseApi = createApi({
           }
         },
       }),
+      updateCard: builder.mutation<updateCardResponse, updateCard>({
+        invalidatesTags: ['Cards'],
+        query: args => {
+          return {
+            body: {
+              answer: args.answer,
+              answerImg: args.answerImg,
+              answerVideo: args.answerVideo,
+              question: args.question,
+              questionImg: args.questionImg,
+              questionVideo: args.questionVideo,
+            },
+            method: 'PATCH',
+            url: `v1/cards/${args.id}`,
+          }
+        },
+      }),
       updateDeck: builder.mutation<updateDeckResponse, updateDeckQuery>({
         invalidatesTags: ['Decks', 'Cards'],
         query: args => {
@@ -153,5 +172,6 @@ export const {
   useGetDeckCardsQuery,
   useGetDecksQuery,
   useRetrieveRandomCardQuery,
+  useUpdateCardMutation,
   useUpdateDeckMutation,
 } = baseApi
