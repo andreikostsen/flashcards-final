@@ -16,10 +16,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import s from './addNewCardModal.module.scss'
 
 type PropsType = {
+  answer?: string
+  answerImg?: string
   cardId: string
+  onOpenChange: (open: boolean) => void
+  open: boolean
+  question?: string
+  questionImg?: string
 }
 
-export const EditCardModal = ({ cardId }: PropsType) => {
+export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
   const {
     control,
     formState: { errors, isValid },
@@ -81,12 +87,12 @@ export const EditCardModal = ({ cardId }: PropsType) => {
       } catch (e) {
         console.log(e)
       }
-      setOpen(false)
+      onOpenChange(false)
       reset()
     }
   }
 
-  const [open, setOpen] = useState(false)
+  // const [open, setOpen] = useState(false)
 
   const onDeleteQuestionImageHandler = () => {
     URL.revokeObjectURL(questionCoverURL)
@@ -98,12 +104,7 @@ export const EditCardModal = ({ cardId }: PropsType) => {
   }
 
   return (
-    <Modal
-      onOpenChange={setOpen}
-      open={open}
-      title={'Add New Card'}
-      trigger={<Button variant={'primary'}>Add New Card</Button>}
-    >
+    <Modal onOpenChange={onOpenChange} open={open} title={'Edit Card'}>
       <form onSubmit={event => event.preventDefault()}>
         <Typography className={s.question} variant={'subtitle2'}>
           Question:
@@ -171,13 +172,13 @@ export const EditCardModal = ({ cardId }: PropsType) => {
         </div>
         <div className={s.footerWrapper}>
           <div>
-            <Button onClick={() => setOpen(false)} variant={'secondary'}>
+            <Button onClick={() => onOpenChange(false)} variant={'secondary'}>
               Cancel
             </Button>
           </div>
           <div>
             <Button onClick={handleSubmit(onSubmit)} variant={'primary'}>
-              Add New Card
+              Update Card
             </Button>
           </div>
         </div>

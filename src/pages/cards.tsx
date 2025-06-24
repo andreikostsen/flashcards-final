@@ -22,6 +22,7 @@ import { TextField } from '@/components/ui/textField'
 import { Typography } from '@/components/ui/typography'
 import { AddNewCardModal } from '@/pages/modals/addNewCardModal'
 import { DeleteModal } from '@/pages/modals/deleteModal'
+import { EditCardModal } from '@/pages/modals/editCardModal'
 import { EditDeckModal } from '@/pages/modals/editDeckModal'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
 import { useGetDeckByIdQuery, useGetDeckCardsQuery } from '@/services/base-api'
@@ -40,11 +41,13 @@ export const Cards = () => {
   const [currentPage, setCurrentPage] = useState<number>()
   const [itemsPerPage, setItemsPerPage] = useState<number>()
   const [searchInputValue, setSearchInputValue] = useState<string>()
-  const [open, setOpen] = useState<boolean>(false)
+  const [editDeckModalOpen, setEditDeckModalOpen] = useState<boolean>(false)
   const [cardId, setCardId] = useState<string>()
   const [cardName, setCardName] = useState<string>()
+  const [answer, setAnswer] = useState<string>()
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
   const [card, setCard] = useState<boolean>(false)
+  const [editCardModalOpen, setEditCardModalOpen] = useState<boolean>(false)
 
   const { data, isLoading } = useGetDeckCardsQuery({
     currentPage,
@@ -66,7 +69,7 @@ export const Cards = () => {
     },
     {
       icon: <SvgWrapper SvgComponent={Edit2Outline} size={'16'} wrapper={'button'} />,
-      onClick: () => setOpen(true),
+      onClick: () => setEditDeckModalOpen(true),
       title: 'Edit',
     },
     {
@@ -98,6 +101,12 @@ export const Cards = () => {
     setDeleteModalOpen(true)
   }
 
+  const editCardHandler = (cardId: string, name: string) => {
+    setCardId(cardId)
+    setEditCardModalOpen(true)
+    setCardName(name)
+  }
+
   if (isLoading) {
     return <div>Loading...</div>
   }
@@ -109,7 +118,6 @@ export const Cards = () => {
   } else if (currentData) {
     nameForDeleteModal = currentData.name
   }
-
 
   return (
     <>
@@ -178,7 +186,12 @@ export const Cards = () => {
                     </TableCell>
                     <TableCell className={s.iconsCell}>
                       <div className={s.iconsDiv}>
-                        <SvgWrapper SvgComponent={Edit2Outline} size={'16'} wrapper={'button'} />
+                        <SvgWrapper
+                          SvgComponent={Edit2Outline}
+                          onClick={() => editCardHandler(item.id)}
+                          size={'16'}
+                          wrapper={'button'}
+                        />
                         <SvgWrapper
                           SvgComponent={TrashOutline}
                           onClick={() => deleteCardHandler(item.id, item.question)}
@@ -196,8 +209,8 @@ export const Cards = () => {
           cover={currentData ? currentData.cover : undefined}
           deckId={deckId ? deckId : ''}
           name={currentData ? currentData.name : ''}
-          onOpenChange={setOpen}
-          open={open}
+          onOpenChange={setEditDeckModalOpen}
+          open={editDeckModalOpen}
         />
         <DeleteModal
           card={card}
@@ -214,6 +227,11 @@ export const Cards = () => {
         />
       </div>
       <ToastContainer />
+      <EditCardModal
+        cardId={cardId ? cardId : ''}
+        onOpenChange={setEditCardModalOpen}
+        open={editCardModalOpen}
+      />
     </>
   )
 }
