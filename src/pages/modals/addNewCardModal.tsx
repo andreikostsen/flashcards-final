@@ -75,9 +75,14 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
 
     if (isValid) {
       try {
-        await createCard(dataForRequest).then(() =>
-          useToast('new card ' + data.question + ' created', ResultCode.Success)
-        )
+        await createCard(dataForRequest).then(res => {
+          if (res.error) {
+            console.log(res)
+            useToast(res.error.data.errorMessages[0].message, ResultCode.Error)
+          } else {
+            useToast('new card ' + data.question + ' created', ResultCode.Success)
+          }
+        })
       } catch (e) {
         console.log(e)
       }

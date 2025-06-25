@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Image } from '@/assets/icons/components'
@@ -25,7 +25,15 @@ type PropsType = {
   questionImg?: string
 }
 
-export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
+export const EditCardModal = ({
+  answer,
+  answerImg,
+  cardId,
+  onOpenChange,
+  open,
+  question,
+  questionImg,
+}: PropsType) => {
   const {
     control,
     formState: { errors, isValid },
@@ -43,8 +51,15 @@ export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
 
   const [updateCard] = useUpdateCardMutation()
 
+  useEffect(() => {
+    setQuestionImgURL(questionImg)
+    setAnswerImgURL(answerImg)
+  }, [answerImg, questionImg])
+
   const [questionCover, setQuestionCover] = useState<File>()
   const [answerCover, setAnswerCover] = useState<File>()
+  const [questionImgURL, setQuestionImgURL] = useState<string | undefined>()
+  const [answerImgURL, setAnswerImgURL] = useState<string | undefined>()
 
   const onQuestionFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -111,7 +126,7 @@ export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
         </Typography>
         <ControlledTextField
           control={control}
-          defaultValue={''}
+          defaultValue={question}
           labelText={'Question?'}
           name={'question'}
           placeholder={'Name'}
@@ -125,9 +140,9 @@ export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
             type={'file'}
           />
         </div>
-        {questionCover && (
+        {questionImgURL && (
           <div className={s.coverImage}>
-            <img src={questionCoverURL} width={'170px'} />
+            <img src={questionImgURL} width={'170px'} />
             <button className={s.iconButton} onClick={onDeleteQuestionImageHandler}>
               <CloseCrossOutline />
             </button>
@@ -143,7 +158,7 @@ export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
         </Typography>
         <ControlledTextField
           control={control}
-          defaultValue={''}
+          defaultValue={answer}
           labelText={'Answer'}
           name={'answer'}
           placeholder={'Name'}
@@ -157,9 +172,9 @@ export const EditCardModal = ({ cardId, onOpenChange, open }: PropsType) => {
             type={'file'}
           />
         </div>
-        {answerCover && (
+        {answerImgURL && (
           <div className={s.coverImage}>
-            <img src={answerCoverURL} width={'170px'} />
+            <img alt={answer} src={answerImgURL} width={'170px'} />
             <button className={s.iconButton} onClick={onDeleteAnswerImageHandler}>
               <CloseCrossOutline />
             </button>

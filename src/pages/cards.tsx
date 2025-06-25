@@ -101,10 +101,11 @@ export const Cards = () => {
     setDeleteModalOpen(true)
   }
 
-  const editCardHandler = (cardId: string, name: string) => {
+  const editCardHandler = (cardId: string, name: string, answer: string) => {
     setCardId(cardId)
     setEditCardModalOpen(true)
     setCardName(name)
+    setAnswer(answer)
   }
 
   if (isLoading) {
@@ -188,7 +189,7 @@ export const Cards = () => {
                       <div className={s.iconsDiv}>
                         <SvgWrapper
                           SvgComponent={Edit2Outline}
-                          onClick={() => editCardHandler(item.id)}
+                          onClick={() => editCardHandler(item.id, item.question, item.answer)}
                           size={'16'}
                           wrapper={'button'}
                         />
@@ -228,9 +229,11 @@ export const Cards = () => {
       </div>
       <ToastContainer />
       <EditCardModal
+        answer={answer}
         cardId={cardId ? cardId : ''}
         onOpenChange={setEditCardModalOpen}
         open={editCardModalOpen}
+        question={cardName}
       />
     </>
   )
