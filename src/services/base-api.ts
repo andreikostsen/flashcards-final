@@ -29,11 +29,22 @@ export const baseApi = createApi({
       createCard: builder.mutation<CreateCardResponse, CreateCard>({
         invalidatesTags: ['Cards'],
         query: arg => {
+          const formData = new FormData()
+
+          formData.append('question', arg.question)
+          formData.append('answer', arg.answer)
+          if (arg.questionImg) {
+            formData.append('questionImg', arg.questionImg)
+          }
+          if (arg.answerImg) {
+            formData.append('answerImg', arg.answerImg)
+          }
+
+          // formData.append('questionVideo', arg.questionVideo)
+          // formData.append('answerVideo', arg.answerVideo)
+
           return {
-            body: {
-              answer: arg.answer,
-              question: arg.question,
-            },
+            body: formData,
             method: 'POST',
             url: `v1/decks/${arg.id}/cards`,
           }

@@ -177,7 +177,10 @@ export const Cards = () => {
             {data
               ? data.items.map(item => (
                   <TableRow key={item.id}>
-                    <TableCell key={item.id}>{item.question}</TableCell>
+                    <TableCell key={item.id}>
+                      {item.question}
+                      <img alt={item.question} src={item.questionImg} width={'170px'} />
+                    </TableCell>
                     <TableCell>{item.answer}</TableCell>
                     <TableCell>
                       {new Date(Date.parse(item.updated)).toLocaleDateString('ru-RU')}

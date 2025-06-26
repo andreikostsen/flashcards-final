@@ -69,7 +69,12 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
 
   const onSubmit = async (data: addNewCardFormValues) => {
     console.log(data)
-    const dataForRequest = { ...data, id: deckId }
+    const dataForRequest = {
+      ...data,
+      answerImg: answerCover,
+      id: deckId,
+      questionImg: questionCover,
+    }
 
     console.log(dataForRequest)
 
@@ -78,8 +83,10 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
         await createCard(dataForRequest).then(res => {
           if (res.error) {
             console.log(res)
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             useToast(res.error.data.errorMessages[0].message, ResultCode.Error)
           } else {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             useToast('new card ' + data.question + ' created', ResultCode.Success)
           }
         })

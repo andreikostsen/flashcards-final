@@ -90,11 +90,11 @@ export type GetDeckCardsItems = {
 
 export type CreateCard = {
   answer: string
-  answerImg?: string
+  answerImg?: File | null
   answerVideo?: string
   id: string
   question: string
-  questionImg?: string
+  questionImg?: File | null
   questionVideo?: string
 }
 
