@@ -45,6 +45,8 @@ export const Cards = () => {
   const [cardId, setCardId] = useState<string>()
   const [cardName, setCardName] = useState<string>()
   const [answer, setAnswer] = useState<string>()
+  const [answerImg, setAnswerImg] = useState<string>()
+  const [questionImg, setQuestionImg] = useState<string>()
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
   const [card, setCard] = useState<boolean>(false)
   const [editCardModalOpen, setEditCardModalOpen] = useState<boolean>(false)
@@ -101,11 +103,19 @@ export const Cards = () => {
     setDeleteModalOpen(true)
   }
 
-  const editCardHandler = (cardId: string, name: string, answer: string) => {
+  const editCardHandler = (
+    cardId: string,
+    name: string,
+    answer: string,
+    answerImg: string,
+    questionImg: string
+  ) => {
     setCardId(cardId)
     setEditCardModalOpen(true)
     setCardName(name)
     setAnswer(answer)
+    setAnswerImg(answerImg)
+    setQuestionImg(questionImg)
   }
 
   if (isLoading) {
@@ -179,9 +189,18 @@ export const Cards = () => {
                   <TableRow key={item.id}>
                     <TableCell key={item.id}>
                       {item.question}
-                      <img alt={item.question} src={item.questionImg} width={'170px'} />
+                      <br />
+                      {item.questionImg && (
+                        <img alt={item.question} src={item.questionImg} width={'170px'} />
+                      )}
                     </TableCell>
-                    <TableCell>{item.answer}</TableCell>
+                    <TableCell>
+                      {item.answer}
+                      <br />
+                      {item.answerImg && (
+                        <img alt={item.answer} src={item.answerImg} width={'170px'} />
+                      )}
+                    </TableCell>
                     <TableCell>
                       {new Date(Date.parse(item.updated)).toLocaleDateString('ru-RU')}
                     </TableCell>
@@ -192,7 +211,7 @@ export const Cards = () => {
                       <div className={s.iconsDiv}>
                         <SvgWrapper
                           SvgComponent={Edit2Outline}
-                          onClick={() => editCardHandler(item.id, item.question, item.answer)}
+                          onClick={() => editCardHandler(item.id, item.question, item.answer, item.questionImg, item.answerImg)}
                           size={'16'}
                           wrapper={'button'}
                         />
@@ -233,10 +252,12 @@ export const Cards = () => {
       <ToastContainer />
       <EditCardModal
         answer={answer}
+        answerImg={answerImg}
         cardId={cardId ? cardId : ''}
         onOpenChange={setEditCardModalOpen}
         open={editCardModalOpen}
         question={cardName}
+        questionImg={questionImg}
       />
     </>
   )

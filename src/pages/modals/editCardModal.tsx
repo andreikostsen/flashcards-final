@@ -140,9 +140,9 @@ export const EditCardModal = ({
             type={'file'}
           />
         </div>
-        {questionImgURL && (
+        {questionImg && (
           <div className={s.coverImage}>
-            <img src={questionImgURL} width={'170px'} />
+            <img alt={question} src={questionImgURL} width={'170px'} />
             <button className={s.iconButton} onClick={onDeleteQuestionImageHandler}>
               <CloseCrossOutline />
             </button>
