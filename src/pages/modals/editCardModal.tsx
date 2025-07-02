@@ -16,23 +16,23 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import s from './addNewCardModal.module.scss'
 
 type PropsType = {
-  answer?: string
   answerImg?: string
+  answerTxt?: string
   cardId: string
   onOpenChange: (open: boolean) => void
   open: boolean
-  question?: string
   questionImg?: string
+  questionTxt?: string
 }
 
 export const EditCardModal = ({
-  answer,
   answerImg,
+  answerTxt,
   cardId,
   onOpenChange,
   open,
-  question,
   questionImg,
+  questionTxt,
 }: PropsType) => {
   const {
     control,
@@ -41,8 +41,8 @@ export const EditCardModal = ({
     reset,
   } = useForm<addNewCardFormValues>({
     defaultValues: {
-      answer: '',
-      question: '',
+      answer: answerTxt,
+      question: questionTxt,
     },
     resolver: zodResolver(addNewCardSchema),
   })
@@ -56,14 +56,15 @@ export const EditCardModal = ({
     setAnswerImgURL(answerImg)
   }, [answerImg, questionImg])
 
-  const [questionCover, setQuestionCover] = useState<File>()
-  const [answerCover, setAnswerCover] = useState<File>()
+  const [questionCover, setQuestionCover] = useState<File | string>()
+  const [answerCover, setAnswerCover] = useState<File | string>()
   const [questionImgURL, setQuestionImgURL] = useState<string | undefined>()
   const [answerImgURL, setAnswerImgURL] = useState<string | undefined>()
 
   const onQuestionFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setQuestionCover(e.target.files?.[0])
+      setQuestionImgURL(URL.createObjectURL(e.target.files?.[0]))
     }
   }
 
@@ -72,31 +73,38 @@ export const EditCardModal = ({
   const onAnswerFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setAnswerCover(e.target.files?.[0])
+      setAnswerImgURL(URL.createObjectURL(e.target.files?.[0]))
     }
   }
 
   console.log('answerCover: ', answerCover)
 
-  let questionCoverURL: string = ''
-  let answerCoverURL: string = ''
-
-  if (questionCover) {
-    questionCoverURL = URL.createObjectURL(questionCover)
-  }
-
-  if (answerCover) {
-    answerCoverURL = URL.createObjectURL(answerCover)
-  }
+  // let questionCoverURL: string = ''
+  // let answerCoverURL: string = ''
+  //
+  // if (questionCover) {
+  //   questionCoverURL = URL.createObjectURL(questionCover)
+  // }
+  //
+  // if (answerCover) {
+  //   answerCoverURL = URL.createObjectURL(answerCover)
+  // }
 
   const onSubmit = async (data: addNewCardFormValues) => {
     console.log(data)
-    const dataForRequest = { ...data, id: cardId }
+    const dataForRequest = {
+      ...data,
+      answerImg: answerCover,
+      id: cardId,
+      questionImg: questionCover,
+    }
 
     console.log(dataForRequest)
 
     if (isValid) {
       try {
         await updateCard(dataForRequest).then(() =>
+          // eslint-disable-next-line react-hooks/rules-of-hooks
           useToast('Card ' + data.question + ' was successfully updated', ResultCode.Success)
         )
       } catch (e) {
@@ -110,12 +118,19 @@ export const EditCardModal = ({
   // const [open, setOpen] = useState(false)
 
   const onDeleteQuestionImageHandler = () => {
-    URL.revokeObjectURL(questionCoverURL)
-    setQuestionCover(undefined)
+    if (questionImgURL != null) {
+      URL.revokeObjectURL(questionImgURL)
+    }
+
+    setQuestionCover('')
+    setQuestionImgURL(undefined)
   }
   const onDeleteAnswerImageHandler = () => {
-    URL.revokeObjectURL(answerCoverURL)
-    setAnswerCover(undefined)
+    if (answerImgURL != null) {
+      URL.revokeObjectURL(answerImgURL)
+    }
+    setAnswerCover('')
+    setAnswerImgURL(undefined)
   }
 
   return (
@@ -126,7 +141,7 @@ export const EditCardModal = ({
         </Typography>
         <ControlledTextField
           control={control}
-          defaultValue={question}
+          defaultValue={questionTxt}
           labelText={'Question?'}
           name={'question'}
           placeholder={'Name'}
@@ -140,9 +155,9 @@ export const EditCardModal = ({
             type={'file'}
           />
         </div>
-        {questionImg && (
+        {questionImgURL && (
           <div className={s.coverImage}>
-            <img alt={question} src={questionImgURL} width={'170px'} />
+            <img alt={questionTxt} src={questionImgURL} width={'170px'} />
             <button className={s.iconButton} onClick={onDeleteQuestionImageHandler}>
               <CloseCrossOutline />
             </button>
@@ -158,7 +173,7 @@ export const EditCardModal = ({
         </Typography>
         <ControlledTextField
           control={control}
-          defaultValue={answer}
+          defaultValue={answerTxt}
           labelText={'Answer'}
           name={'answer'}
           placeholder={'Name'}
@@ -174,7 +189,7 @@ export const EditCardModal = ({
         </div>
         {answerImgURL && (
           <div className={s.coverImage}>
-            <img alt={answer} src={answerImgURL} width={'170px'} />
+            <img alt={answerTxt} src={answerImgURL} width={'170px'} />
             <button className={s.iconButton} onClick={onDeleteAnswerImageHandler}>
               <CloseCrossOutline />
             </button>

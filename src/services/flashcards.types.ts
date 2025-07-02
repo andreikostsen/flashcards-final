@@ -154,11 +154,11 @@ export type updateDeckQuery = {
 
 export type updateCard = {
   answer?: string
-  answerImg?: string
+  answerImg?: File | string
   answerVideo?: string
   id: string
   question?: string
-  questionImg?: string
+  questionImg?: File | string
   questionVideo?: string
 }
 

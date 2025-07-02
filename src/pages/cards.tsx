@@ -211,7 +211,15 @@ export const Cards = () => {
                       <div className={s.iconsDiv}>
                         <SvgWrapper
                           SvgComponent={Edit2Outline}
-                          onClick={() => editCardHandler(item.id, item.question, item.answer, item.questionImg, item.answerImg)}
+                          onClick={() =>
+                            editCardHandler(
+                              item.id,
+                              item.question,
+                              item.answer,
+                              item.questionImg,
+                              item.answerImg
+                            )
+                          }
                           size={'16'}
                           wrapper={'button'}
                         />
@@ -251,13 +259,13 @@ export const Cards = () => {
       </div>
       <ToastContainer />
       <EditCardModal
-        answer={answer}
         answerImg={answerImg}
+        answerTxt={answer}
         cardId={cardId ? cardId : ''}
         onOpenChange={setEditCardModalOpen}
         open={editCardModalOpen}
-        question={cardName}
         questionImg={questionImg}
+        questionTxt={cardName}
       />
     </>
   )

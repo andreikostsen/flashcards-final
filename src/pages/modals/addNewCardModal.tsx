@@ -83,6 +83,7 @@ export const AddNewCardModal = ({ deckId }: PropsType) => {
         await createCard(dataForRequest).then(res => {
           if (res.error) {
             console.log(res)
+            // @ts-ignore
             // eslint-disable-next-line react-hooks/rules-of-hooks
             useToast(res.error.data.errorMessages[0].message, ResultCode.Error)
           } else {
