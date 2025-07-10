@@ -216,8 +216,8 @@ export const Cards = () => {
                               item.id,
                               item.question,
                               item.answer,
-                              item.questionImg,
-                              item.answerImg
+                              item.answerImg,
+                              item.questionImg
                             )
                           }
                           size={'16'}

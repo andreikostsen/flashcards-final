@@ -1,24 +1,30 @@
 import { useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
-import { PlayCircleOutline, TrashOutline } from "@/assets/icons/components";
-import Edit2Outline from "@/assets/icons/components/Edit2Outline";
-import { SvgWrapper } from "@/assets/icons/wrapper";
-import { Filter } from "@/components/layout/filter/filter";
-import { Header } from "@/components/ui/header";
-import { Pagination } from "@/components/ui/pagination";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/tables/table-components";
-import { Typography } from "@/components/ui/typography";
-import { AddNewDeckModal } from "@/pages/modals/addNewDeckModal";
-import { DeleteModal } from "@/pages/modals/deleteModal";
-import { EditDeckModal } from "@/pages/modals/editDeckModal";
-import { useAuthMeQuery } from "@/services/auth/auth.service";
-import { useGetDecksQuery } from "@/services/base-api";
-import { GetDecksQuery } from "@/services/flashcards.types";
+import { PlayCircleOutline, TrashOutline } from '@/assets/icons/components'
+import Edit2Outline from '@/assets/icons/components/Edit2Outline'
+import { SvgWrapper } from '@/assets/icons/wrapper'
+import { Filter } from '@/components/layout/filter/filter'
+import { Header } from '@/components/ui/header'
+import { Pagination } from '@/components/ui/pagination'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/tables/table-components'
+import { Typography } from '@/components/ui/typography'
+import { AddNewDeckModal } from '@/pages/modals/addNewDeckModal'
+import { DeleteModal } from '@/pages/modals/deleteModal'
+import { EditDeckModal } from '@/pages/modals/editDeckModal'
+import { useAuthMeQuery } from '@/services/auth/auth.service'
+import { useGetDecksQuery } from '@/services/base-api'
+import { GetDecksQuery } from '@/services/flashcards.types'
 
-import s from "./decks.module.scss";
-import { ToastContainer } from "react-toastify";
-
+import s from './decks.module.scss'
 
 export const Decks = () => {
   const [currentPage, setCurrentPage] = useState<number>()
@@ -109,7 +115,6 @@ export const Decks = () => {
   const openChangeDeleteHandler = (open: boolean) => {
     setDeleteModalOpen(open)
   }
-
 
   return (
     <>

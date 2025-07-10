@@ -134,15 +134,37 @@ export const baseApi = createApi({
       updateCard: builder.mutation<updateCardResponse, updateCard>({
         invalidatesTags: ['Cards'],
         query: args => {
+          const formData = new FormData()
+
+          if (args.answer) {
+            formData.append('answer', args.answer)
+          }
+          args.answerImg
+            ? formData.append('answerImg', args.answerImg)
+            : formData.append('answerImg', (args.answerImg = ''))
+          if (args.answerVideo) {
+            formData.append('answerVideo', args.answerVideo)
+          }
+          if (args.question) {
+            formData.append('question', args.question)
+          }
+          args.questionImg
+            ? formData.append('questionImg', args.questionImg)
+            : formData.append('questionImg', (args.questionImg = ''))
+          if (args.questionVideo) {
+            formData.append('questionVideo', args.questionVideo)
+          }
+
           return {
-            body: {
-              answer: args.answer,
-              answerImg: args.answerImg,
-              answerVideo: args.answerVideo,
-              question: args.question,
-              questionImg: args.questionImg,
-              questionVideo: args.questionVideo,
-            },
+            body: formData,
+            // body: {
+            //   answer: args.answer,
+            //   answerImg: args.answerImg,
+            //   answerVideo: args.answerVideo,
+            //   question: args.question,
+            //   questionImg: args.questionImg,
+            //   questionVideo: args.questionVideo,
+            // },
             method: 'PATCH',
             url: `v1/cards/${args.id}`,
           }

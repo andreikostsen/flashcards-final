@@ -79,17 +79,6 @@ export const EditCardModal = ({
 
   console.log('answerCover: ', answerCover)
 
-  // let questionCoverURL: string = ''
-  // let answerCoverURL: string = ''
-  //
-  // if (questionCover) {
-  //   questionCoverURL = URL.createObjectURL(questionCover)
-  // }
-  //
-  // if (answerCover) {
-  //   answerCoverURL = URL.createObjectURL(answerCover)
-  // }
-
   const onSubmit = async (data: addNewCardFormValues) => {
     console.log(data)
     const dataForRequest = {
@@ -115,10 +104,8 @@ export const EditCardModal = ({
     }
   }
 
-  // const [open, setOpen] = useState(false)
-
   const onDeleteQuestionImageHandler = () => {
-    if (questionImgURL != null) {
+    if (questionImgURL != undefined) {
       URL.revokeObjectURL(questionImgURL)
     }
 
@@ -126,7 +113,7 @@ export const EditCardModal = ({
     setQuestionImgURL(undefined)
   }
   const onDeleteAnswerImageHandler = () => {
-    if (answerImgURL != null) {
+    if (answerImgURL != undefined) {
       URL.revokeObjectURL(answerImgURL)
     }
     setAnswerCover('')
