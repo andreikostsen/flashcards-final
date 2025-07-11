@@ -13,3 +13,8 @@ export type AuthMeResponseType = {
   name: string
   updated: string
 }
+
+export type UpdateCard = {
+  avatar?: File | null
+  name?: string
+}

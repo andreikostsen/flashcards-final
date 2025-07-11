@@ -1,6 +1,6 @@
-import { AuthMeResponseType, LoginArgs } from '@/services/auth/auth.types'
+import { AuthMeResponseType, LoginArgs, UpdateCard } from "@/services/auth/auth.types";
 import { baseApi } from '@/services/base-api'
-import { SignUpRequest, SignUpResponse } from '@/services/flashcards.types'
+import { SignUpRequest, SignUpResponse, updateCard } from "@/services/flashcards.types";
 
 export const authService = baseApi.injectEndpoints({
   endpoints: builder => ({
@@ -10,6 +10,24 @@ export const authService = baseApi.injectEndpoints({
         body,
         url: 'v1/auth/me',
       }),
+    }),
+    updateUser: builder.mutation<AuthMeResponseType, UpdateCard>({
+      invalidatesTags: ['Auth'],
+      query: arg => {
+        const formData = new FormData()
+
+        if (arg.avatar) {
+          formData.append('avatar', arg.avatar)
+        }
+        if (arg.name) {
+          formData.append('name', arg.name)
+        }
+       return {
+         body: formData,
+         method: 'PATCH',
+         url: `v1/auth/me`,
+       }
+      }
     }),
     login: builder.mutation<void, LoginArgs>({
       invalidatesTags: ['Auth'],
@@ -37,5 +55,5 @@ export const authService = baseApi.injectEndpoints({
   }),
 })
 
-export const { useAuthMeQuery, useLoginMutation, useLogoutMutation, useSignupMutation } =
+export const { useAuthMeQuery, useLoginMutation, useLogoutMutation, useSignupMutation, useUpdateUserMutation } =
   authService
