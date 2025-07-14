@@ -14,7 +14,7 @@ export type AuthMeResponseType = {
   updated: string
 }
 
-export type UpdateCard = {
+export type UpdateUser = {
   avatar?: File | null
   name?: string
 }

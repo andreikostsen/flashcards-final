@@ -12,7 +12,7 @@ import { Cards } from '@/pages/cards'
 import { Decks } from '@/pages/decks'
 import { LearnDeckPage } from '@/pages/learnDeckPage'
 import { Premium } from '@/pages/premium'
-import { Profile } from '@/pages/profile'
+import { Profile } from '@/pages/profile/profile'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
 
 const publicRoutes: RouteObject[] = [
