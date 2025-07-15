@@ -1,31 +1,37 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useRef, useState } from "react";
+import { useForm } from 'react-hook-form'
 
 import { LogOut } from '@/assets/icons/components'
 import Edit2Outline from '@/assets/icons/components/Edit2Outline'
 import { SvgWrapper } from '@/assets/icons/wrapper'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
 import { Header } from '@/components/ui/header'
 import { Typography } from '@/components/ui/typography'
+import { editProfileFormValues, editProfileSchema } from '@/pages/profile/editProfile-schema'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import s from './profile.module.scss'
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ControlledTextField } from "@/components/ui/controlled/controlled-textfield/controlled-textfield";
-import { editProfileFormValues, editProfileSchema } from "@/pages/profile/editProfile-schema";
+
 
 export const Profile = () => {
 
+  const hiddenInputRef = useRef<HTMLInputElement | null>(null);
+
+
   const {
-    register,
     control,
-    handleSubmit,
     formState: { errors, isValid },
-  } = useForm<editProfileFormValues>({
-      resolver: zodResolver(editProfileSchema),
+    handleSubmit,
+    register,
+  } = useForm<{name: string, avatar: File}>({
+     // resolver: zodResolver(editProfileSchema),
   })
 
+
+  const { ref: registerRef, ...rest } = register('avatar')
 
   const meResponse = useAuthMeQuery()
 
@@ -42,9 +48,15 @@ export const Profile = () => {
 
   console.log(avatar)
 
-  const onSubmit = (data: editProfileFormValues)  => {
+  const onSubmit = (data: editProfileFormValues) => {
     console.log(data)
+    debugger
   }
+
+  const onUpload = () => {
+    hiddenInputRef.current.click();
+
+  };
 
   return (
     <>
@@ -58,40 +70,51 @@ export const Profile = () => {
             <img alt={meResponse.data.name} className={s.avatar} src={meResponse.data.avatar} />
           ) : (
             <div className={s.noImage}>
-              <Typography variant={"h1"}>{name[0]}</Typography>
+              <Typography variant={'h1'}>{name[0]}</Typography>
             </div>
           )}
           <input
-            id={"avatar"}
-            // onChange={onAvatarFileChange}
-            // style={{ display: "none" }}
-            type={"file"}
-            {...register("avatar")}
+            id={'avatar'}
+            onChange={onAvatarFileChange}
+            style={{ display: "none" }}
+            type={'file'}
+            // {...register('avatar')}
+            name={'avatar'}
+            ref={(e) => {
+              registerRef(e);
+              hiddenInputRef.current = e;
+            }}
           />
           <p>{errors.avatar?.message}</p>
           <SvgWrapper
             SvgComponent={Edit2Outline}
-            onClick={() => {
-            }}
-            size={"16"}
-            wrapper={"button"}
+            onClick={onUpload}
+            size={'16'}
+            wrapper={'button'}
           />
-          <Button as={"label"} onClick={handleSubmit(onSubmit)} htmlFor={"avatar"} variant={"primary"}>
-            Update Avatar
-          </Button>
-        </form>
-
-        <Typography className={s.center} variant={'h2'}>
-          {meResponse.data.name}
-        </Typography>
-        <ControlledTextField
+          <ControlledTextField
           control={control}
           defaultValue={meResponse.data.name}
-          labelText={'Question?'}
           name={'name'}
           placeholder={'Name'}
           wrapperProps={{ className: s.txtFieldWrapper }}
         />
+          {/*<Button*/}
+          {/*  as={'label'}*/}
+          {/*  htmlFor={'avatar'}*/}
+          {/*  onClick={handleSubmit(onSubmit)}*/}
+          {/*  variant={'primary'}*/}
+          {/*>*/}
+          {/*  Update Avatar*/}
+          {/*</Button>*/}
+
+
+        <Typography className={s.center} variant={'h2'}>
+          {meResponse.data.name}
+        </Typography>
+
+        </form>
+
         <Typography className={s.email} variant={'body2'}>
           {meResponse.data.email}
         </Typography>
