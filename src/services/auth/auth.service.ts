@@ -22,6 +22,7 @@ export const authService = baseApi.injectEndpoints({
         if (arg.name) {
           formData.append('name', arg.name)
         }
+
        return {
          body: formData,
          method: 'PATCH',

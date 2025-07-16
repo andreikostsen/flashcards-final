@@ -10,53 +10,50 @@ import { ControlledTextField } from '@/components/ui/controlled/controlled-textf
 import { Header } from '@/components/ui/header'
 import { Typography } from '@/components/ui/typography'
 import { editProfileFormValues, editProfileSchema } from '@/pages/profile/editProfile-schema'
-import { useAuthMeQuery } from '@/services/auth/auth.service'
+import { useAuthMeQuery, useUpdateUserMutation } from "@/services/auth/auth.service";
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import s from './profile.module.scss'
 
-
 export const Profile = () => {
-
-  const hiddenInputRef = useRef<HTMLInputElement | null>(null);
-
+  const hiddenInputRef = useRef<HTMLInputElement | null>(null)
 
   const {
     control,
     formState: { errors, isValid },
     handleSubmit,
     register,
-  } = useForm<{name: string, avatar: File}>({
-     // resolver: zodResolver(editProfileSchema),
+  } = useForm<{ avatar: File; name: string }>({
+    // resolver: zodResolver(editProfileSchema),
   })
-
 
   const { ref: registerRef, ...rest } = register('avatar')
 
   const meResponse = useAuthMeQuery()
+  const [updateUser] = useUpdateUserMutation()
 
   const name = [...meResponse.data.name]
 
-  const [avatar, setAvatar] = useState<File | string>()
+  const [avatar, setAvatar] = useState<File | null>()
+
 
   const onAvatarFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setAvatar(e.target.files?.[0])
-      // setAnswerImgURL(URL.createObjectURL(e.target.files?.[0]))
+      updateUser({name: 'Andrei', avatar: e.target.files?.[0]})
     }
   }
 
-  console.log(avatar)
 
   const onSubmit = (data: editProfileFormValues) => {
     console.log(data)
-    debugger
+    updateUser({name: data.name, avatar})
+
   }
 
   const onUpload = () => {
-    hiddenInputRef.current.click();
-
-  };
+    hiddenInputRef.current.click()
+  }
 
   return (
     <>
@@ -66,39 +63,43 @@ export const Profile = () => {
           Personal Information
         </Typography>
         <form onSubmit={event => event.preventDefault()}>
-          {meResponse.data.avatar ? (
-            <img alt={meResponse.data.name} className={s.avatar} src={meResponse.data.avatar} />
-          ) : (
-            <div className={s.noImage}>
-              <Typography variant={'h1'}>{name[0]}</Typography>
-            </div>
-          )}
-          <input
-            id={'avatar'}
-            onChange={onAvatarFileChange}
-            style={{ display: "none" }}
-            type={'file'}
-            // {...register('avatar')}
-            name={'avatar'}
-            ref={(e) => {
-              registerRef(e);
-              hiddenInputRef.current = e;
-            }}
-          />
-          <p>{errors.avatar?.message}</p>
-          <SvgWrapper
-            SvgComponent={Edit2Outline}
-            onClick={onUpload}
-            size={'16'}
-            wrapper={'button'}
-          />
+          <div className={s.avatarWrapper}>
+            {meResponse.data.avatar ? (
+              <img alt={meResponse.data.name} className={s.avatar} src={meResponse.data.avatar} />
+            ) : (
+              <div className={s.noImage}>
+                <Typography variant={'h1'}>{name[0]}</Typography>
+              </div>
+            )}
+            <input
+              id={'avatar'}
+              // {...register('avatar')}
+              {...rest}
+              name={'avatar'}
+              onChange={onAvatarFileChange}
+              ref={e => {
+                registerRef(e)
+                hiddenInputRef.current = e
+              }}
+              style={{ display: 'none' }}
+              type={'file'}
+            />
+            <SvgWrapper
+              SvgComponent={Edit2Outline}
+              onClick={onUpload}
+              size={'16'}
+              // wrapper={'button'}
+              wrapperClassName={s.editIconWrapper}
+            />
+          </div>
+
           <ControlledTextField
-          control={control}
-          defaultValue={meResponse.data.name}
-          name={'name'}
-          placeholder={'Name'}
-          wrapperProps={{ className: s.txtFieldWrapper }}
-        />
+            control={control}
+            defaultValue={meResponse.data.name}
+            name={'name'}
+            placeholder={'Name'}
+            wrapperProps={{ className: s.txtFieldWrapper }}
+          />
           {/*<Button*/}
           {/*  as={'label'}*/}
           {/*  htmlFor={'avatar'}*/}
@@ -107,12 +108,16 @@ export const Profile = () => {
           {/*>*/}
           {/*  Update Avatar*/}
           {/*</Button>*/}
+          <Button
+            onClick={handleSubmit(onSubmit)}
+            variant={'primary'}
+          >
+            Update Avatar
+          </Button>
 
-
-        <Typography className={s.center} variant={'h2'}>
-          {meResponse.data.name}
-        </Typography>
-
+          <Typography className={s.center} variant={'h2'}>
+            {meResponse.data.name}
+          </Typography>
         </form>
 
         <Typography className={s.email} variant={'body2'}>
