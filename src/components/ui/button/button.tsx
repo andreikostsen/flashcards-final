@@ -8,15 +8,16 @@ export type ButtonProps<T extends ElementType = 'button'> = {
   disabled?: boolean
   fullWidth?: boolean
   variant?: 'primary' | 'secondary'
+  externalClassName?: string
 } & ComponentPropsWithoutRef<T>
 
 export const Button = <T extends ElementType = 'button'>(props: ButtonProps<T>) => {
-  const { as: Component = 'button', disabled, fullWidth, variant = 'primary', ...rest } = props
+  const { as: Component = 'button', disabled, fullWidth, variant = 'primary', externalClassName, ...rest } = props
 
   return (
     <Component
       {...rest}
-      className={`${s.button} ${s[variant]} ${fullWidth ? s.fullWidth : ''} ${disabled ? s.disabled : ''} `}
+      className={`${s.button} ${s[variant]} ${fullWidth ? s.fullWidth : ''} ${disabled ? s.disabled : ''} ${externalClassName}`}
     ></Component>
   )
 }

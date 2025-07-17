@@ -12,6 +12,7 @@ export const ControlledTextField = <T extends FieldValues>({
   labelText,
   name,
   onClear,
+  onBlur,
   rules,
   shouldUnregister,
   wrapperProps,
@@ -40,6 +41,7 @@ export const ControlledTextField = <T extends FieldValues>({
       labelText={labelText}
       onClear={onClear}
       validationError={error?.message}
+      onBlur={onBlur}
     />
   )
 }
