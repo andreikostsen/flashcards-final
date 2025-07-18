@@ -24,7 +24,7 @@ export const authService = baseApi.injectEndpoints({
         }
 
        return {
-         body: formData,
+          body: formData,
          method: 'PATCH',
          url: `v1/auth/me`,
        }
