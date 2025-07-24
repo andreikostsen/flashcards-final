@@ -242,6 +242,7 @@ export const Cards = () => {
           name={currentData ? currentData.name : ''}
           onOpenChange={setEditDeckModalOpen}
           open={editDeckModalOpen}
+          isPrivate={currentData ? currentData.isPrivate : undefined}
         />
         <DeleteModal
           card={card}

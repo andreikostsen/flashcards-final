@@ -22,7 +22,7 @@ export const ControlledTextField = <T extends FieldValues>({
     fieldState: { error },
   } = useController({
     control,
-    defaultValue,
+    // defaultValue,
     disabled,
     name,
     rules,
@@ -35,8 +35,9 @@ export const ControlledTextField = <T extends FieldValues>({
       handleValueChange={onChange}
       wrapperProps={wrapperProps}
       {...field}
+      value={value ?? ''} // ✅ use value from react-hook-form
       CloseIcon={CloseIcon}
-      defaultValue={defaultValue}
+      // defaultValue={defaultValue}
       labelText={labelText}
       onClear={onClear}
       validationError={error?.message}

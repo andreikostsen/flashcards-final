@@ -60,7 +60,7 @@ export const Decks = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [cover, setCover] = useState<string | undefined>()
   const [id, setId] = useState<string>('')
-  const [name, setName] = useState<string>()
+  const [name, setName] = useState<string>('')
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
   console.log(meResponse)
