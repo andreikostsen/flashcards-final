@@ -14,7 +14,7 @@ import { LearnDeckPage } from '@/pages/learnDeckPage'
 import { Premium } from '@/pages/premium'
 import { Profile } from '@/pages/profile/profile'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
-import { ZodForm } from "@/pages/zodform";
+
 
 const publicRoutes: RouteObject[] = [
   {
@@ -49,11 +49,7 @@ const privateRoutes: RouteObject[] = [
   {
     element: <LearnDeckPage />,
     path: 'cards/learn/:deckId/:previousCardId',
-  },
-  {
-    element: <ZodForm />,
-    path: '/zod',
-  },
+  }
 ]
 
 const premiumRoutes: RouteObject[] = [

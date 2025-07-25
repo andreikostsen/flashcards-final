@@ -14,6 +14,7 @@ import { useUpdateDeckMutation } from "@/services/base-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import s from "./addNewDeckModal.module.scss";
+import { Typography } from "@/components/ui/typography";
 
 type PropsType = {
   cover?: string
@@ -26,8 +27,11 @@ type PropsType = {
 
 export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) => {
 
+
   const {
     control,
+    setValue,
+    trigger,
     formState: { errors, isValid },
     handleSubmit,
     reset
@@ -69,8 +73,10 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
     if (e.target.files?.[0]) {
       setCover(e.target.files?.[0]);
       setCoverURL(URL.createObjectURL(e.target.files?.[0]));
+      setValue('addDeckCoverInput', e.target.files?.[0])
+      trigger('addDeckCoverInput')
     }
-  };
+  }
 
   console.log("cover: ", cover);
   console.log("coverURL: ", coverURL);
@@ -140,12 +146,17 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
         />
         <div>
           <input
-            id={"addDeckCoverInput"}
+            id="addDeckCoverInput"
             onChange={onFileChange}
             style={{ display: "none" }}
-            type={"file"}
+            type="file"
           />
         </div>
+        {errors.addDeckCoverInput && (
+          <Typography variant="error">
+            <>{errors.addDeckCoverInput.message}</>
+          </Typography>
+        )}
         {coverURL && (
           <div className={s.coverImage}>
             <img alt={name} src={coverURL} width={"170px"} />

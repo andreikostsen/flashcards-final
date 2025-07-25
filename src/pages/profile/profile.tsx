@@ -1,6 +1,5 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { LogOut } from "@/assets/icons/components";
 import Edit2Outline from "@/assets/icons/components/Edit2Outline";
@@ -10,41 +9,17 @@ import { Card } from "@/components/ui/card";
 import { ControlledTextField } from "@/components/ui/controlled/controlled-textfield/controlled-textfield";
 import { Header } from "@/components/ui/header";
 import { Typography } from "@/components/ui/typography";
-import { useAuthMeQuery, useUpdateUserMutation } from "@/services/auth/auth.service";
+import { useAuthMeQuery, useLogoutMutation, useUpdateUserMutation } from "@/services/auth/auth.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import s from "./profile.module.scss";
+import { EditProfileFormValues, editProfileSchema } from "@/pages/profile/editProfile-schema";
 
-const editProfileSchema = z.object({
-  avatar: z
-    .any()
-    .optional()
-    .refine(
-      (files) => !files || files.length === 0 || files[0].size <= 1_000_000,
-      { message: "File too big (max 1MB)" }
-    )
-    .refine(
-      (files) => !files || files.length === 0 || files[0]?.type?.startsWith("image/"),
-      { message: "Only Image files are allowed" }
-    ),
-
-
-  userName: z
-    .string()
-    .min(3, "Name must be at least 3 characters")
-    .max(200, "Name is too long")
-    .optional()
-    .transform((val) => (val?.trim() === "" ? undefined : val))
-    .refine((val) => val === undefined || val.length > 0, {
-      message: "Name cannot be empty"
-    })
-});
-
-type EditProfileFormValues = z.infer<typeof editProfileSchema>
 
 export const Profile = () => {
   const meResponse = useAuthMeQuery();
   const [updateUser] = useUpdateUserMutation();
+  const [logout] = useLogoutMutation();
   const [showEditForm, setShowEditForm] = useState<boolean>(false)
 
   const isLoading = meResponse.isLoading || !meResponse.data;
@@ -53,86 +28,44 @@ export const Profile = () => {
 
   const {
     control,
-    register,
     setValue,
     trigger,
     handleSubmit,
     getFieldState,
     watch,
-    formState: { errors, isDirty }
+    formState: { errors }
   } = useForm<EditProfileFormValues>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      userName: meResponse.data.name
+      userName: meResponse.data ? meResponse.data.name : undefined,
     }
   });
 
   const selectedFile = watch("avatar")?.[0];
-  const filePreview = selectedFile ? URL.createObjectURL(selectedFile) : meResponse.data.avatar;
-  const nameInitial = meResponse.data.name?.[0]?.toUpperCase() || "?";
+  const filePreview = selectedFile ? URL.createObjectURL(selectedFile) : meResponse.data? meResponse.data.avatar : undefined;
+  const nameInitial = meResponse.data?.name?.[0]?.toUpperCase() || "?";
 
-  // const onSubmit = (data: EditProfileFormValues) => {
-  //
-  //   const payload: { name?: string; avatar?: File } = {};
-  //
-  //   if (data.userName) {
-  //     payload.name = data.userName;
-  //   }
-  //
-  //   if (data.avatar?.[0]) {
-  //     payload.avatar = data.avatar[0];
-  //   }
-  //
-  //   updateUser(payload);
-  // };
-
-  // Intercepts form submission to show alert before Zod validation
-  // const onRawSubmit = (event: FormEvent<HTMLFormElement>) => {
-  //
-  //   debugger
-  //
-  //   event.preventDefault();
-  //
-  //   const form = event.currentTarget;
-  //   const formData = new FormData(form);
-  //
-  //   const file = formData.get("avatar");
-  //   const name = formData.get("userName");
-  //
-  //   const hasAvatar = file instanceof File && file.name !== "";
-  //   const hasName = typeof name === "string" && name.trim() !== "";
-  //
-  //   if (!hasAvatar && !hasName) {
-  //     alert("Please provide at least one field to update.");
-  //     return;
-  //   }
-  //
-  //   try {
-  //     handleSubmit(onSubmit, (error) => {
-  //       debugger
-  //       console.warn("Validation error:", error);
-  //     })();
-  //   } catch (err) {
-  //     console.error("Caught Zod error manually:", err);
-  //   }
-  // };
 
   const onSubmit = (data: EditProfileFormValues) => {
     console.log(data)
     setShowEditForm(false)
     updateUser(
       {
-        avatar: data.avatar[0],
-        name: data.userName
+        avatar: data.avatar ? data.avatar[0] : undefined,
+        name: getFieldState("userName").isDirty ? data.userName : undefined,
       }
       )
   }
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+    }
+    catch (e) {
+      console.error('Logout failed:', e)
+    }
+  }
 
-  const avatarFieldState = getFieldState("avatar").isDirty;
-  const userNameFieldState = getFieldState("userName").isDirty
-  console.log(avatarFieldState)
-  console.log(userNameFieldState)
 
   return (
     <>
@@ -150,17 +83,9 @@ export const Profile = () => {
                 <Typography variant="h1">{nameInitial}</Typography>
               </div>
             )}
-            {/*{!errors.avatar ? (*/}
-            {/*  <img alt="avatar" className={s.avatar} src={filePreview} />*/}
-            {/*) : (*/}
-            {/*  <div className={s.noImage}>*/}
-            {/*    <Typography variant="h1">{nameInitial}</Typography>*/}
-            {/*  </div>*/}
-            {/*)}*/}
             <input
               type="file"
               id="avatar"
-              // {...register("avatar")}
               style={{ display: "none" }}
               onChange={(e) => {
                 const fileList = e.target.files;
@@ -181,10 +106,9 @@ export const Profile = () => {
               />
             </label>
           </div>
-          <p>{getFieldState("avatar").isDirty && "dirty"}</p>
           {errors.avatar && (
             <Typography variant="error" className={s.avatarError}>
-              {errors.avatar.message}
+              <>{errors.avatar.message}</>
             </Typography>
           )}
 
@@ -193,9 +117,15 @@ export const Profile = () => {
               control={control}
               name="userName"
               placeholder="Name"
-              wrapperProps={{ className: s.txtFieldWrapper }} /><Button
+              wrapperProps={{ className: s.txtFieldWrapper }}
+              onBlur={()=>{setShowEditForm(false)
+              console.log('blur')
+              }}
+            />
+              <Button
               externalClassName={s.buttonMargin}
               fullWidth
+              // disabled={!getFieldState("userName").isDirty}
               type="submit"
               variant="primary"
             >
@@ -203,7 +133,7 @@ export const Profile = () => {
             </Button></>)}
           {!showEditForm && (
             <Typography className={s.center} variant={"h2"}>
-              {meResponse.data.name}
+              {meResponse.data ? meResponse.data.name: null}
               <SvgWrapper
                 SvgComponent={Edit2Outline}
                 onClick={() => setShowEditForm(true)}
@@ -216,9 +146,9 @@ export const Profile = () => {
         </form>
 
         <Typography className={s.email} variant="body2">
-          {meResponse.data.email}
+          {meResponse.data ? meResponse.data.email: null}
         </Typography>
-        <Button variant="secondary">
+        <Button variant="secondary" onClick={handleLogout}>
           <LogOut width="1rem" />
           Logout
         </Button>
