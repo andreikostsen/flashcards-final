@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import s from "./addNewDeckModal.module.scss";
 import { Typography } from "@/components/ui/typography";
+import { ImageInput } from "@/pages/modals/imageInput";
 
 type PropsType = {
   cover?: string
@@ -30,11 +31,11 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
 
   const {
     control,
-    setValue,
-    trigger,
     formState: { errors, isValid },
     handleSubmit,
-    reset
+    reset,
+    setValue,
+    trigger,
   } = useForm<addNewDeckFormValues>({
     defaultValues: {
       name, // from props — this sets the initial value
@@ -60,26 +61,26 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
 
   const [updateDeck] = useUpdateDeckMutation();
 
-  useEffect(() => {
-    setCoverURL(props.cover);
-  }, [props.cover]);
-
-
-  const [cover, setCover] = useState<File | string>();
-  const [coverURL, setCoverURL] = useState<string | undefined>();
+  // useEffect(() => {
+  //   setCoverURL(props.cover);
+  // }, [props.cover]);
+  //
+  //
+   const [cover, setCover] = useState<File | string>();
+  // const [coverURL, setCoverURL] = useState<string | undefined>();
   const [showProgress, setShowProgress] = useState<boolean>(false);
 
-  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setCover(e.target.files?.[0]);
-      setCoverURL(URL.createObjectURL(e.target.files?.[0]));
-      setValue('addDeckCoverInput', e.target.files?.[0])
-      trigger('addDeckCoverInput')
-    }
-  }
+  // const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files?.[0]) {
+  //     setCover(e.target.files?.[0]);
+  //     setCoverURL(URL.createObjectURL(e.target.files?.[0]));
+  //     setValue('addDeckCoverInput', e.target.files?.[0])
+  //     trigger('addDeckCoverInput')
+  //   }
+  // }
 
   console.log("cover: ", cover);
-  console.log("coverURL: ", coverURL);
+  // console.log("coverURL: ", coverURL);
 
   const onSubmit = (data: addNewDeckFormValues) => {
     console.log(data);
@@ -115,13 +116,13 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
     }
   };
 
-  const onDeleteImageHandler = () => {
-    if (coverURL != null) {
-      URL.revokeObjectURL(coverURL);
-    }
-    setCover("");
-    setCoverURL(undefined);
-  };
+  // const onDeleteImageHandler = () => {
+  //   if (coverURL != null) {
+  //     URL.revokeObjectURL(coverURL);
+  //   }
+  //   setCover("");
+  //   setCoverURL(undefined);
+  // };
 
   const onInputClearHandler = () => {
     console.log("clear input pressed");
@@ -144,30 +145,31 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
           onClear={onInputClearHandler}
           wrapperProps={{ className: s.txtFieldWrapper }}
         />
-        <div>
-          <input
-            id="addDeckCoverInput"
-            onChange={onFileChange}
-            style={{ display: "none" }}
-            type="file"
-          />
-        </div>
-        {errors.addDeckCoverInput && (
-          <Typography variant="error">
-            <>{errors.addDeckCoverInput.message}</>
-          </Typography>
-        )}
-        {coverURL && (
-          <div className={s.coverImage}>
-            <img alt={name} src={coverURL} width={"170px"} />
-            <button className={s.iconButton} onClick={onDeleteImageHandler}>
-              <CloseCrossOutline />
-            </button>
-          </div>
-        )}
-        <Button as={"label"} fullWidth htmlFor={"addDeckCoverInput"} variant={"secondary"}>
-          <Image width={"1rem"} /> {coverURL ? "Change Image" : "Upload Image"}
-        </Button>
+        {/*<div>*/}
+        {/*  <input*/}
+        {/*    id="addDeckCoverInput"*/}
+        {/*    onChange={onFileChange}*/}
+        {/*    style={{ display: "none" }}*/}
+        {/*    type="file"*/}
+        {/*  />*/}
+        {/*</div>*/}
+        {/*{errors.addDeckCoverInput && (*/}
+        {/*  <Typography variant="error">*/}
+        {/*    <>{errors.addDeckCoverInput.message}</>*/}
+        {/*  </Typography>*/}
+        {/*)}*/}
+        {/*{coverURL && (*/}
+        {/*  <div className={s.coverImage}>*/}
+        {/*    <img alt={name} src={coverURL} width={"170px"} />*/}
+        {/*    <button className={s.iconButton} onClick={onDeleteImageHandler}>*/}
+        {/*      <CloseCrossOutline />*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*)}*/}
+        {/*<Button as={"label"} fullWidth htmlFor={"addDeckCoverInput"} variant={"secondary"}>*/}
+        {/*  <Image width={"1rem"} /> {coverURL ? "Change Image" : "Upload Image"}*/}
+        {/*</Button>*/}
+        <ImageInput id={"addDeckCoverInput"} errors={errors} setValue={setValue} trigger={trigger} cover={props.cover} coverFromInput={setCover}/>
         <div className={s.checkBoxWrapper}>
           <ControlledCheckbox control={control} labelText={"Private Pack"} name={"isPrivate"} />
         </div>

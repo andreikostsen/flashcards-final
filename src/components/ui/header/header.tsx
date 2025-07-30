@@ -13,6 +13,7 @@ import { AuthMeResponseType } from '@/services/auth/auth.types'
 import s from './header.module.scss'
 
 import logo from './logo.svg'
+import { NavLink } from "react-router-dom";
 
 type HeaderPropsType = {
   isAuthenticated: boolean
@@ -33,7 +34,9 @@ export const Header = ({ isAuthenticated, userInfo }: HeaderPropsType) => {
     <div className={s.wrapper}>
       <div className={s.container}>
         <div className={s.inner}>
+          <NavLink to={'/'}>
           <img className={s.logo} src={logo} />
+        </NavLink>
         </div>
         <div className={s.inner}>
           {isAuthenticated ? (
