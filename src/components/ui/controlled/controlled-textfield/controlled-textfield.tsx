@@ -11,14 +11,15 @@ export const ControlledTextField = <T extends FieldValues>({
   disabled,
   labelText,
   name,
+  onBlur: customOnBlur, // ⬅️ rename to avoid conflict
   onClear,
-  rules, onBlur: customOnBlur, // ⬅️ rename to avoid conflict
+  rules,
   shouldUnregister,
   wrapperProps,
   ...rest
 }: Props<T>) => {
   const {
-    field: { onChange, onBlur, value, ...field },
+    field: { onBlur, onChange, value, ...field },
     fieldState: { error },
   } = useController({
     control,
@@ -30,23 +31,23 @@ export const ControlledTextField = <T extends FieldValues>({
   })
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    onBlur(); // Call react-hook-form's blur tracking
-    customOnBlur?.(e); // Call your custom handler
-  };
+    onBlur() // Call react-hook-form's blur tracking
+    customOnBlur?.(e) // Call your custom handler
+  }
 
   return (
     <TextField
       {...rest}
       {...field}
-      onBlur={handleBlur} // ✅ merged blur handler
-      handleValueChange={onChange}
-      wrapperProps={wrapperProps}
       CloseIcon={CloseIcon}
+      handleValueChange={onChange}
       // defaultValue={defaultValue}
       labelText={labelText}
+      onBlur={handleBlur} // ✅ merged blur handler
       onClear={onClear}
       validationError={error?.message}
       value={value ?? ''} // ✅ use value from react-hook-form
+      wrapperProps={wrapperProps}
     />
   )
 }

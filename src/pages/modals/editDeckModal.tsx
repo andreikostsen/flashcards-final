@@ -1,21 +1,19 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
-import { Image } from "@/assets/icons/components";
-import CloseCrossOutline from "@/assets/icons/components/Close";
-import { ResultCode } from "@/common/enams/statuses";
-import { useToast } from "@/common/hooks/useToast";
-import { Button } from "@/components/ui/button";
-import { ControlledCheckbox } from "@/components/ui/controlled/controlled-checkbox/controlled-checkbox";
-import { ControlledTextField } from "@/components/ui/controlled/controlled-textfield/controlled-textfield";
-import { Modal } from "@/components/ui/modal";
-import { addNewDeckFormValues, addNewDeckSchema } from "@/pages/modals/addNewDecksModal-schema";
-import { useUpdateDeckMutation } from "@/services/base-api";
-import { zodResolver } from "@hookform/resolvers/zod";
+import CloseCrossOutline from '@/assets/icons/components/Close'
+import { ResultCode } from '@/common/enams/statuses'
+import { useToast } from '@/common/hooks/useToast'
+import { Button } from '@/components/ui/button'
+import { ControlledCheckbox } from '@/components/ui/controlled/controlled-checkbox/controlled-checkbox'
+import { ControlledTextField } from '@/components/ui/controlled/controlled-textfield/controlled-textfield'
+import { Modal } from '@/components/ui/modal'
+import { addNewDeckFormValues, addNewDeckSchema } from '@/pages/modals/addNewDecksModal-schema'
+import { ImageInput } from '@/pages/modals/imageInput'
+import { useUpdateDeckMutation } from '@/services/base-api'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-import s from "./addNewDeckModal.module.scss";
-import { Typography } from "@/components/ui/typography";
-import { ImageInput } from "@/pages/modals/imageInput";
+import s from './addNewDeckModal.module.scss'
 
 type PropsType = {
   cover?: string
@@ -27,8 +25,6 @@ type PropsType = {
 }
 
 export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) => {
-
-
   const {
     control,
     formState: { errors, isValid },
@@ -38,57 +34,40 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
     trigger,
   } = useForm<addNewDeckFormValues>({
     defaultValues: {
+      isPrivate: isPrivate ?? false,
       name, // from props — this sets the initial value
-      isPrivate: isPrivate ?? false
     },
-    resolver: zodResolver(addNewDeckSchema)
-  });
+    resolver: zodResolver(addNewDeckSchema),
+  })
 
   // If name comes asynchronously (e.g. from Redux or query), sync with reset
   useEffect(() => {
     if (name !== undefined) {
       reset({
+        isPrivate: isPrivate ?? false,
         name,
-        isPrivate: isPrivate ?? false
-      });
+      })
     }
-  }, [name, isPrivate, reset]);
+  }, [name, isPrivate, reset])
 
+  console.log(name, isPrivate)
+  console.log('errors: ', errors)
+  console.log(props.cover)
 
-  console.log(name, isPrivate);
-  console.log("errors: ", errors);
-  console.log(props.cover);
+  const [updateDeck] = useUpdateDeckMutation()
 
-  const [updateDeck] = useUpdateDeckMutation();
+  const [cover, setCover] = useState<File | string>()
+  const [showProgress, setShowProgress] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   setCoverURL(props.cover);
-  // }, [props.cover]);
-  //
-  //
-   const [cover, setCover] = useState<File | string>();
-  // const [coverURL, setCoverURL] = useState<string | undefined>();
-  const [showProgress, setShowProgress] = useState<boolean>(false);
-
-  // const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files?.[0]) {
-  //     setCover(e.target.files?.[0]);
-  //     setCoverURL(URL.createObjectURL(e.target.files?.[0]));
-  //     setValue('addDeckCoverInput', e.target.files?.[0])
-  //     trigger('addDeckCoverInput')
-  //   }
-  // }
-
-  console.log("cover: ", cover);
-  // console.log("coverURL: ", coverURL);
+  console.log('cover: ', cover)
 
   const onSubmit = (data: addNewDeckFormValues) => {
-    console.log(data);
-    const dataWithCover = { ...data, cover, id: deckId };
+    console.log(data)
+    const dataWithCover = { ...data, cover, id: deckId }
 
-    setShowProgress(true);
+    setShowProgress(true)
 
-    console.log(dataWithCover);
+    console.log(dataWithCover)
 
     if (isValid) {
       updateDeck({ ...dataWithCover })
@@ -96,25 +75,25 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
           if (result.error) {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             useToast(
-              "Deck wasn't updated!" + " " + result.error.data.errorMessages[0].message,
+              "Deck wasn't updated!" + ' ' + result.error.data.errorMessages[0].message,
               ResultCode.Error
-            );
+            )
           } else {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             useToast(
-              "Deck " + "\"" + data.name + "\"" + " has been successfully updated",
+              'Deck ' + '"' + data.name + '"' + ' has been successfully updated',
               ResultCode.Success
-            );
+            )
           }
         })
         .catch((err: Error) => console.log(err))
         .finally(() => {
-          props.onOpenChange(false);
-          reset();
-          setShowProgress(false);
-        });
+          props.onOpenChange(false)
+          reset()
+          setShowProgress(false)
+        })
     }
-  };
+  }
 
   // const onDeleteImageHandler = () => {
   //   if (coverURL != null) {
@@ -125,9 +104,9 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
   // };
 
   const onInputClearHandler = () => {
-    console.log("clear input pressed");
-    reset({name:''});
-  };
+    console.log('clear input pressed')
+    reset({ name: '' })
+  }
 
   return (
     <Modal
@@ -140,8 +119,8 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
         <ControlledTextField
           CloseIcon={CloseCrossOutline}
           control={control}
-          labelText="Name Pack"
-          name={"name"}
+          labelText={'Name Pack'}
+          name={'name'}
           onClear={onInputClearHandler}
           wrapperProps={{ className: s.txtFieldWrapper }}
         />
@@ -169,23 +148,30 @@ export const EditDeckModal = ({ deckId, isPrivate, name, ...props }: PropsType) 
         {/*<Button as={"label"} fullWidth htmlFor={"addDeckCoverInput"} variant={"secondary"}>*/}
         {/*  <Image width={"1rem"} /> {coverURL ? "Change Image" : "Upload Image"}*/}
         {/*</Button>*/}
-        <ImageInput id={"addDeckCoverInput"} errors={errors} setValue={setValue} trigger={trigger} cover={props.cover} coverFromInput={setCover}/>
+        <ImageInput
+          cover={props.cover}
+          coverFromInput={setCover}
+          errors={errors}
+          id={'addDeckCoverInput'}
+          setValue={setValue}
+          trigger={trigger}
+        />
         <div className={s.checkBoxWrapper}>
-          <ControlledCheckbox control={control} labelText={"Private Pack"} name={"isPrivate"} />
+          <ControlledCheckbox control={control} labelText={'Private Pack'} name={'isPrivate'} />
         </div>
         <div className={s.footerWrapper}>
           <div>
-            <Button onClick={() => props.onOpenChange(false)} variant={"secondary"}>
+            <Button onClick={() => props.onOpenChange(false)} variant={'secondary'}>
               Cancel
             </Button>
           </div>
           <div>
-            <Button onClick={handleSubmit(onSubmit)} variant={"primary"}>
+            <Button onClick={handleSubmit(onSubmit)} variant={'primary'}>
               Update Deck
             </Button>
           </div>
         </div>
       </form>
     </Modal>
-  );
-};
+  )
+}

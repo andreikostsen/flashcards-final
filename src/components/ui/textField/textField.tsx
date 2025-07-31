@@ -85,9 +85,9 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>((props, re
         <input
           className={InputFieldClasses.inputClass}
           id={inputId}
+          onBlur={onBlur}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onBlur={onBlur}
           placeholder={placeholder}
           ref={ref}
           type={resolvedInputType}
