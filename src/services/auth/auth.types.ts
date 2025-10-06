@@ -18,3 +18,7 @@ export type UpdateUser = {
   avatar?: File | null
   name?: string
 }
+
+export type VerifyUserEmailRequest = {
+  code: string
+}

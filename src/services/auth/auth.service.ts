@@ -1,6 +1,6 @@
-import { AuthMeResponseType, LoginArgs, UpdateUser } from "@/services/auth/auth.types";
+import { AuthMeResponseType, LoginArgs, UpdateUser, VerifyUserEmailRequest } from "@/services/auth/auth.types";
 import { baseApi } from '@/services/base-api'
-import { SignUpRequest, SignUpResponse } from "@/services/flashcards.types";
+import { SignUpRequest, SignUpResponse } from '@/services/flashcards.types'
 
 export const authService = baseApi.injectEndpoints({
   endpoints: builder => ({
@@ -10,25 +10,6 @@ export const authService = baseApi.injectEndpoints({
         body,
         url: 'v1/auth/me',
       }),
-    }),
-    updateUser: builder.mutation<AuthMeResponseType, UpdateUser>({
-      invalidatesTags: ['Auth'],
-      query: arg => {
-        const formData = new FormData()
-
-        if (arg.avatar) {
-          formData.append('avatar', arg.avatar)
-        }
-        if (arg.name) {
-          formData.append('name', arg.name)
-        }
-
-       return {
-          body: formData,
-         method: 'PATCH',
-         url: `v1/auth/me`,
-       }
-      }
     }),
     login: builder.mutation<void, LoginArgs>({
       invalidatesTags: ['Auth'],
@@ -52,6 +33,32 @@ export const authService = baseApi.injectEndpoints({
         url: 'v1/auth/sign-up',
       }),
     }),
+    updateUser: builder.mutation<AuthMeResponseType, UpdateUser>({
+      invalidatesTags: ['Auth'],
+      query: arg => {
+        const formData = new FormData()
+
+        if (arg.avatar) {
+          formData.append('avatar', arg.avatar)
+        }
+        if (arg.name) {
+          formData.append('name', arg.name)
+        }
+
+        return {
+          body: formData,
+          method: 'PATCH',
+          url: `v1/auth/me`,
+        }
+      },
+    }),
+    verifyUserEmail: builder.mutation<any, VerifyUserEmailRequest>({
+      query: body => ({
+        body,
+        method: 'POST',
+        url: 'v1/auth/verify-email',
+      }),
+    }),
   }),
 })
 
@@ -61,4 +68,5 @@ export const {
   useLogoutMutation,
   useSignupMutation,
   useUpdateUserMutation,
+  useVerifyUserEmailMutation,
 } = authService

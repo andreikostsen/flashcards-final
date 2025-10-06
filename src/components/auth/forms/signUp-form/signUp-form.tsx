@@ -26,7 +26,7 @@ export const SignUpForm = ({ onSubmit }: signUpFormType) => {
     resolver: zodResolver(signUpSchema),
   })
 
-  console.log('errors: ', errors)
+  // console.log('errors: ', errors)
 
   return (
     <>

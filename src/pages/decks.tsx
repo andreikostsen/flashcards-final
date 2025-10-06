@@ -93,7 +93,12 @@ export const Decks = () => {
     setSearchInputValue(value)
   }
 
-  const onEditClickHandler = (cover: string | undefined, id: string, name: string, isPrivate: boolean) => {
+  const onEditClickHandler = (
+    cover: string | undefined,
+    id: string,
+    name: string,
+    isPrivate: boolean
+  ) => {
     console.log(cover, id, name)
     setOpen(true)
     setCover(cover)
@@ -190,7 +195,9 @@ export const Decks = () => {
                         {meResponse.data?.id == item.author.id && (
                           <SvgWrapper
                             SvgComponent={Edit2Outline}
-                            onClick={() => onEditClickHandler(item.cover, item.id, item.name, item.isPrivate)}
+                            onClick={() =>
+                              onEditClickHandler(item.cover, item.id, item.name, item.isPrivate)
+                            }
                             size={'16'}
                             wrapper={'button'}
                           />
@@ -218,11 +225,10 @@ export const Decks = () => {
         <EditDeckModal
           cover={cover}
           deckId={id}
+          isPrivate={isPrivate}
           name={name}
           onOpenChange={openChangeEditHandler}
           open={open}
-          isPrivate={isPrivate}
-
         />
         <DeleteModal
           id={id}

@@ -6,6 +6,7 @@ import {
   createBrowserRouter,
 } from 'react-router-dom'
 
+import { ConfirmEmail } from '@/pages/auth/emailConfirmation/emailConfirmationPage'
 import { LoginPage } from '@/pages/auth/login/loginPage'
 import { SignUpPage } from '@/pages/auth/signUp/signUpPage'
 import { Cards } from '@/pages/cards'
@@ -14,7 +15,6 @@ import { LearnDeckPage } from '@/pages/learnDeckPage'
 import { Premium } from '@/pages/premium'
 import { Profile } from '@/pages/profile/profile'
 import { useAuthMeQuery } from '@/services/auth/auth.service'
-
 
 const publicRoutes: RouteObject[] = [
   {
@@ -26,6 +26,11 @@ const publicRoutes: RouteObject[] = [
     element: <SignUpPage />,
     errorElement: <div>This is sign-up error!</div>,
     path: '/signup',
+  },
+  {
+    element: <ConfirmEmail />,
+    errorElement: <div>This is confirm email page error!</div>,
+    path: '/confirm-email/:code',
   },
 ]
 
@@ -49,7 +54,7 @@ const privateRoutes: RouteObject[] = [
   {
     element: <LearnDeckPage />,
     path: 'cards/learn/:deckId/:previousCardId',
-  }
+  },
 ]
 
 const premiumRoutes: RouteObject[] = [
